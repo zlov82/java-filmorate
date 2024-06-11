@@ -23,12 +23,10 @@ public class FilmController {
     @PostMapping
     public Film createNewFilm(@Valid @RequestBody Film newFilm) {
         log.info("Фильм для добавления {}", newFilm);
-        if (isValidFilm(newFilm)) {
-            newFilm.setId(getUniqueFilmId());
-            films.put(newFilm.getId(), newFilm);
-            return newFilm;
-        }
-        return null;
+        ValidFilm(newFilm);
+        newFilm.setId(getUniqueFilmId());
+        films.put(newFilm.getId(), newFilm);
+        return newFilm;
     }
 
     //обновление фильма
@@ -44,20 +42,18 @@ public class FilmController {
             throw new ValidationException("Ошибка поиска фильма для обновления");
         }
 
-        if (isValidFilm(updatedFilm)) {
-            savedFilm.setName(updatedFilm.getName());
-            if (updatedFilm.getDescription() != null) {
-                savedFilm.setDescription(updatedFilm.getDescription());
-            }
-            if (updatedFilm.getReleaseDate() != null) {
-                savedFilm.setReleaseDate(updatedFilm.getReleaseDate());
-            }
-            if (updatedFilm.getDuration() != null) {
-                savedFilm.setDuration(updatedFilm.getDuration());
-            }
-            return savedFilm;
+        ValidFilm(updatedFilm);
+        savedFilm.setName(updatedFilm.getName());
+        if (updatedFilm.getDescription() != null) {
+            savedFilm.setDescription(updatedFilm.getDescription());
         }
-        return null;
+        if (updatedFilm.getReleaseDate() != null) {
+            savedFilm.setReleaseDate(updatedFilm.getReleaseDate());
+        }
+        if (updatedFilm.getDuration() != null) {
+            savedFilm.setDuration(updatedFilm.getDuration());
+        }
+        return savedFilm;
     }
 
     //получение всех фильмов
@@ -75,7 +71,7 @@ public class FilmController {
         return ++maxFilmId;
     }
 
-    private boolean isValidFilm(Film film) {
+    private void ValidFilm(Film film) {
         if (film.getDescription().length() > 200) {
             log.debug("Длина описания фильма {}", film.getDescription().length());
             throw new ValidationException("Слишком длинное описание фильма");
@@ -84,10 +80,5 @@ public class FilmController {
             log.debug("Релизная дата {}", film.getReleaseDate());
             throw new ValidationException("Слишком ранняя дата релиза");
         }
-        if (!film.getDuration().isPositive()) {
-            log.debug("Продолжительность {}", film.getDuration());
-            throw new jakarta.validation.ValidationException("Продолжительность фильма меньше нуля");
-        }
-        return true;
     }
 }
