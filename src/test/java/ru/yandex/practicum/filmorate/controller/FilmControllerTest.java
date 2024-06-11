@@ -84,6 +84,22 @@ class FilmControllerTest {
                 .andExpect(status().is4xxClientError());
     }
 
+    @Test
+    public void successUpdateFilm() throws Exception {
+
+        this.mockMvc.perform(MockMvcRequestBuilders
+                        .post("/films")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(gson.toJson(createFilm(
+                                "Ешь, молись, люби",
+                                "Просто легкий фильм",
+                                LocalDate.of(2000, 01, 01),
+                                150)))
+                )
+                .andExpect(status().is2xxSuccessful());
+
+    }
+
 
     private Film createFilm(String name, String description, LocalDate date, Integer duration) {
         Film film = new Film();
