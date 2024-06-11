@@ -23,7 +23,7 @@ public class FilmController {
     @PostMapping
     public Film createNewFilm(@Valid @RequestBody Film newFilm) {
         log.info("Фильм для добавления {}", newFilm);
-        ValidFilm(newFilm);
+        validateFilm(newFilm);
         newFilm.setId(getUniqueFilmId());
         films.put(newFilm.getId(), newFilm);
         return newFilm;
@@ -42,7 +42,7 @@ public class FilmController {
             throw new ValidationException("Ошибка поиска фильма для обновления");
         }
 
-        ValidFilm(updatedFilm);
+        validateFilm(updatedFilm);
         savedFilm.setName(updatedFilm.getName());
         if (updatedFilm.getDescription() != null) {
             savedFilm.setDescription(updatedFilm.getDescription());
@@ -71,7 +71,7 @@ public class FilmController {
         return ++maxFilmId;
     }
 
-    private void ValidFilm(Film film) {
+    private void validateFilm(Film film) {
         if (film.getDescription().length() > 200) {
             log.debug("Длина описания фильма {}", film.getDescription().length());
             throw new ValidationException("Слишком длинное описание фильма");
