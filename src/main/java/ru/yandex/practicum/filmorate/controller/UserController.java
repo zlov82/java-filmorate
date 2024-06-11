@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.controller;
 
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
@@ -17,16 +18,10 @@ public class UserController {
 
     //создание пользователя
     @PostMapping
-    public User createUser(@RequestBody User newUser) {
+    public User createUser(@Valid @RequestBody User newUser) {
         log.info("Создание нового пользователя {}", newUser);
-        if (newUser.getEmail().isEmpty()) {
-            throw new ValidationException("Электронная почта не должна быть пустой");
-        }
-        if (!newUser.getEmail().contains("@")) {
-            throw new ValidationException("Электронная почта не содержит @");
-        }
-        if (newUser.getLogin().isEmpty() || newUser.getLogin().contains(" ")) {
-            throw new ValidationException("Некорректный логин пользователя");
+        if (newUser.getLogin().contains(" ")) {
+            throw new ValidationException("Логин содержит пробелы");
         }
         if (newUser.getBirthday().after(Date.from(Instant.now()))) {
             throw new ValidationException("Дата рождения не может быть в будущем");
@@ -45,7 +40,7 @@ public class UserController {
 
     //обновление пользователя
     @PutMapping
-    public User updateUser(@RequestBody User updatedUser) {
+    public User updateUser(@Valid @RequestBody User updatedUser) {
         log.info("Запрос изменения данных пользователя {}", updatedUser);
 
         if (updatedUser.getId() == null) {
@@ -53,9 +48,6 @@ public class UserController {
         }
 
         if (updatedUser.getEmail() != null) {
-            if (!updatedUser.getEmail().contains("@")) {
-                throw new ValidationException("Email должен быть указан и содержать @");
-            }
             if (isUserEmailIsBusy(updatedUser.getEmail(), updatedUser.getId())) {
                 throw new ValidationException("Email уже занят другим пользователем");
             }
