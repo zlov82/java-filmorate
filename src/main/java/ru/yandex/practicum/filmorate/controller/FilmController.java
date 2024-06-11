@@ -17,7 +17,7 @@ import java.util.Map;
 public class FilmController {
 
     private final Map<Integer, Film> films = new HashMap<>();
-    private static final LocalDate MIN_RELEASE_DATE = LocalDate.of(1985, 12, 28);
+    private static final LocalDate MIN_RELEASE_DATE = LocalDate.of(1895, 12, 28);
 
     //добавление фильма
     @PostMapping
@@ -26,8 +26,9 @@ public class FilmController {
         if (isValidFilm(newFilm)) {
             newFilm.setId(getUniqueFilmId());
             films.put(newFilm.getId(), newFilm);
+            return newFilm;
         }
-        return newFilm;
+        return null;
     }
 
     //обновление фильма
@@ -54,9 +55,9 @@ public class FilmController {
             if (updatedFilm.getDuration() != null) {
                 savedFilm.setDuration(updatedFilm.getDuration());
             }
+            return savedFilm;
         }
-
-        return savedFilm;
+        return null;
     }
 
     //получение всех фильмов
