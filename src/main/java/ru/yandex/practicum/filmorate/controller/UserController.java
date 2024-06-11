@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 
-import java.time.Instant;
 import java.util.*;
 
 @Slf4j
@@ -22,9 +21,6 @@ public class UserController {
         log.info("Создание нового пользователя {}", newUser);
         if (newUser.getLogin().contains(" ")) {
             throw new ValidationException("Логин содержит пробелы");
-        }
-        if (newUser.getBirthday().after(Date.from(Instant.now()))) {
-            throw new ValidationException("Дата рождения не может быть в будущем");
         }
 
         if (newUser.getName() == null) {
@@ -47,31 +43,22 @@ public class UserController {
             throw new ValidationException("Не указан id пользователя");
         }
 
-        if (updatedUser.getEmail() != null) {
-            if (isUserEmailIsBusy(updatedUser.getEmail(), updatedUser.getId())) {
-                throw new ValidationException("Email уже занят другим пользователем");
-            }
-        }
-
-        if (updatedUser.getBirthday() != null) {
-            if (updatedUser.getBirthday().after(Date.from(Instant.now()))) {
-                throw new ValidationException("День рождения не может быть в будущем");
-            }
-        }
-
         User savedUser = users.get(updatedUser.getId());
         if (savedUser == null) {
             throw new ValidationException("Пользователь для обновления не найден");
         }
-        if (updatedUser.getEmail() != null) {
-            savedUser.setEmail(updatedUser.getEmail());
+
+        if (isUserEmailIsBusy(updatedUser.getEmail(), updatedUser.getId())) {
+            throw new ValidationException("Email уже занят другим пользователем");
         }
+
+        savedUser.setEmail(updatedUser.getEmail());
+        savedUser.setLogin(updatedUser.getLogin());
+
         if (updatedUser.getBirthday() != null) {
             savedUser.setBirthday(updatedUser.getBirthday());
         }
-        if (updatedUser.getLogin() != null) {
-            savedUser.setLogin(updatedUser.getLogin());
-        }
+
         if (updatedUser.getName() != null) {
             savedUser.setName(updatedUser.getName());
         }
