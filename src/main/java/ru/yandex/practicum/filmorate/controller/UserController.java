@@ -13,7 +13,8 @@ import java.util.*;
 @RequestMapping("/users")
 public class UserController {
 
-    private final Map<Integer, User> users = new HashMap<>();
+    private final Map<Long, User> users = new HashMap<>();
+    private long usersCounter = 0L;
 
     //создание пользователя
     @PostMapping
@@ -52,36 +53,23 @@ public class UserController {
             throw new ValidationException("Email уже занят другим пользователем");
         }
 
-        savedUser.setEmail(updatedUser.getEmail());
-        savedUser.setLogin(updatedUser.getLogin());
+        users.put(updatedUser.getId(), updatedUser);
 
-        if (updatedUser.getBirthday() != null) {
-            savedUser.setBirthday(updatedUser.getBirthday());
-        }
-
-        if (updatedUser.getName() != null) {
-            savedUser.setName(updatedUser.getName());
-        }
-        return savedUser;
+        return updatedUser;
     }
 
     //получение списка всех пользователей
     @GetMapping
     public Collection<User> getAllUsers() {
-        log.info("Запрос списка пользователей. Пользователей {}", users.size());
+        log.info("Запрос списка пользователей:\n{}", users.values());
         return users.values();
     }
 
-    private int getUniqueUserId() {
-        int maxUserId = users.keySet()
-                .stream()
-                .mapToInt(id -> id)
-                .max()
-                .orElse(0);
-        return ++maxUserId;
+    private long getUniqueUserId() {
+        return ++usersCounter;
     }
 
-    private boolean isUserEmailIsBusy(String email, int userId) {
+    private boolean isUserEmailIsBusy(String email, long userId) {
         Optional<User> userWithEmail = users.values()
                 .stream()
                 .filter(user -> user.getEmail().contains(email))

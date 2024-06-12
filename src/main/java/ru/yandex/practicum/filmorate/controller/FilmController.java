@@ -16,8 +16,9 @@ import java.util.Map;
 @RequestMapping("/films")
 public class FilmController {
 
-    private final Map<Integer, Film> films = new HashMap<>();
     private static final LocalDate MIN_RELEASE_DATE = LocalDate.of(1895, 12, 28);
+    private final Map<Long, Film> films = new HashMap<>();
+    private long filmsCounter = 0L;
 
     //добавление фильма
     @PostMapping
@@ -43,39 +44,23 @@ public class FilmController {
         }
 
         validFilm(updatedFilm);
-        savedFilm.setName(updatedFilm.getName());
-        if (updatedFilm.getDescription() != null) {
-            savedFilm.setDescription(updatedFilm.getDescription());
-        }
-        if (updatedFilm.getReleaseDate() != null) {
-            savedFilm.setReleaseDate(updatedFilm.getReleaseDate());
-        }
-        if (updatedFilm.getDuration() != null) {
-            savedFilm.setDuration(updatedFilm.getDuration());
-        }
-        return savedFilm;
+        films.put(savedFilm.getId(), updatedFilm);
+
+        return updatedFilm;
     }
 
     //получение всех фильмов
     @GetMapping
     public Collection<Film> getAllFilms() {
+        log.info("Запрос списка фильмов:\n{}",films.values());
         return films.values();
     }
 
-    private int getUniqueFilmId() {
-        int maxFilmId = films.keySet()
-                .stream()
-                .mapToInt(id -> id)
-                .max()
-                .orElse(0);
-        return ++maxFilmId;
+    private long getUniqueFilmId() {
+        return ++filmsCounter;
     }
 
     private void validFilm(Film film) {
-        if (film.getDescription().length() > 200) {
-            log.debug("Длина описания фильма {}", film.getDescription().length());
-            throw new ValidationException("Слишком длинное описание фильма");
-        }
         if (film.getReleaseDate().isBefore(MIN_RELEASE_DATE)) {
             log.debug("Релизная дата {}", film.getReleaseDate());
             throw new ValidationException("Слишком ранняя дата релиза");

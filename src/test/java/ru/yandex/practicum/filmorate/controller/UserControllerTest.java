@@ -74,7 +74,7 @@ class UserControllerTest {
                         .put("/users")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(gson.toJson(createUser(
-                                1,
+                                1L,
                                 "andy.kozlov@gmail.com",
                                 "zlov",
                                 "Andrey Kozlov",
@@ -102,7 +102,7 @@ class UserControllerTest {
 
     }
 
-    private User createUser(Integer id, String email, String login, String name, LocalDate birthday) {
+    private User createUser(Long id, String email, String login, String name, LocalDate birthday) {
         User user = new User();
 
         user.setId(id);
