@@ -52,8 +52,10 @@ public class FilmController {
     //получение всех фильмов
     @GetMapping
     public Collection<Film> getAllFilms() {
-        log.info("Запрос списка фильмов:\n{}",films.values());
-        return films.values();
+        log.info("Запрос списка фильмов:");
+        Collection<Film> returnFilms = films.values();
+        log.info(returnFilms.toString());
+        return returnFilms;
     }
 
     private long getUniqueFilmId() {

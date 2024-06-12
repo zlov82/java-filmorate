@@ -61,8 +61,10 @@ public class UserController {
     //получение списка всех пользователей
     @GetMapping
     public Collection<User> getAllUsers() {
-        log.info("Запрос списка пользователей:\n{}", users.values());
-        return users.values();
+        log.info("Запрос списка пользователей:");
+        Collection<User> returnUsers = users.values();
+        log.info(returnUsers.toString());
+        return returnUsers;
     }
 
     private long getUniqueUserId() {
