@@ -7,7 +7,9 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import java.time.LocalDate;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -16,7 +18,7 @@ public class FilmService {
     private static final LocalDate MIN_RELEASE_DATE = LocalDate.of(1895, 12, 28);
     private long filmsCounter = 0L;
 
-    private FilmStorage filmStorage;
+    private final FilmStorage filmStorage;
 
     public Film createNewFilm(Film film) {
         validFilm(film);
@@ -35,6 +37,7 @@ public class FilmService {
     }
 
     public Collection<Film> getAll() {
+
         return filmStorage.getAll();
     }
 
