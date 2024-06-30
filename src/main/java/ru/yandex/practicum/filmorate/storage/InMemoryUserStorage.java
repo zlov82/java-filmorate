@@ -1,4 +1,4 @@
-package storage;
+package ru.yandex.practicum.filmorate.storage;
 
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
@@ -8,18 +8,19 @@ import java.util.*;
 
 @Component
 public class InMemoryUserStorage implements UserStorage{
+
     private final Map<Long, User> users = new HashMap<>();
     private long usersCounter = 0L;
 
     @Override
-    public User createUser(User newUser) {
+    public User save(User newUser) {
         newUser.setId(getUniqueUserId());
         users.put(newUser.getId(), newUser);
         return newUser;
     }
 
     @Override
-    public User updateUser(User updatedUser) {
+    public User update(User updatedUser) {
         if (isUserEmailIsBusy(updatedUser.getEmail(), updatedUser.getId())) {
             throw new ValidationException("Email уже занят другим пользователем");
         }
@@ -35,7 +36,7 @@ public class InMemoryUserStorage implements UserStorage{
     }
 
     @Override
-    public Collection<User> getAllUsers() {
+    public Collection<User> getAll() {
         Collection<User> returnUsers = users.values();
         return returnUsers;
     }

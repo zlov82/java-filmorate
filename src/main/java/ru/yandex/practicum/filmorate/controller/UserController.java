@@ -1,23 +1,22 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
-import storage.FilmStorage;
-import storage.InMemoryUserStorage;
-import storage.UserStorage;
+import ru.yandex.practicum.filmorate.service.UserService;
 
 import java.util.*;
 
 @Slf4j
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/users")
 public class UserController {
 
-    UserStorage userStorage = new InMemoryUserStorage();
+    private final UserService userService;
 
     @PostMapping
     public User createUser(@Valid @RequestBody User newUser) {
@@ -31,7 +30,7 @@ public class UserController {
             newUser.setName(newUser.getLogin());
         }
 
-        return userStorage.createUser(newUser);
+        return userService.newUser(newUser);
     }
 
     //обновление пользователя
@@ -43,14 +42,14 @@ public class UserController {
             throw new ValidationException("Не указан id пользователя");
         }
 
-        return userStorage.updateUser(updatedUser);
+        return userService.update(updatedUser);
     }
 
     //получение списка всех пользователей
     @GetMapping
     public Collection<User> getAllUsers() {
         log.info("Запрос списка пользователей:");
-        Collection<User> returnUsers = userStorage.getAllUsers();
+        Collection<User> returnUsers = userService.getAll();
         log.info(returnUsers.toString());
         return returnUsers;
     }

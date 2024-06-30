@@ -1,27 +1,28 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
-import storage.FilmStorage;
-import storage.InMemoryFilmStorage;
+import ru.yandex.practicum.filmorate.service.FilmService;
 
 import java.util.Collection;
 
 @Slf4j
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/films")
 public class FilmController {
 
-    private final FilmStorage filmStorage = new InMemoryFilmStorage();
+    private final FilmService filmService;
 
     //добавление фильма
     @PostMapping
     public Film createNewFilm(@Valid @RequestBody Film newFilm) {
         log.info("Фильм для добавления {}", newFilm);
-        return filmStorage.createNewFilm(newFilm);
+        return filmService.createNewFilm(newFilm);
     }
 
     //обновление фильма
@@ -31,15 +32,14 @@ public class FilmController {
         if (updatedFilm.getId() == null) {
             throw new ValidationException("Не указан id фильма для обновления");
         }
-
-        return filmStorage.updateFilm(updatedFilm);
+        return filmService.updateFilm(updatedFilm);
     }
 
     //получение всех фильмов
     @GetMapping
     public Collection<Film> getAllFilms() {
         log.info("Запрос списка фильмов:");
-        Collection<Film> returnFilms = filmStorage.getAllFilms();
+        Collection<Film> returnFilms = filmService.getAll();
         log.info(returnFilms.toString());
         return returnFilms;
     }

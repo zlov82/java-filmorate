@@ -8,10 +8,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import ru.yandex.practicum.filmorate.controller.adapter.LocalDateAdapter;
 import ru.yandex.practicum.filmorate.model.Film;
 
+import javax.swing.*;
 import java.time.LocalDate;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -26,7 +26,7 @@ class FilmControllerTest {
 
     @BeforeEach
     public void setUp() {
-        this.mockMvc = MockMvcBuilders.standaloneSetup(new FilmController()).build();
+        // this.mockMvc = MockMvcBuilders.standaloneSetup(new FilmController().build());
     }
 
     @Test
