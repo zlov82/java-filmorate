@@ -1,6 +1,8 @@
 package ru.yandex.practicum.filmorate.service;
 
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
@@ -14,6 +16,7 @@ import java.time.LocalDate;
 
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -21,6 +24,7 @@ import java.util.stream.Collectors;
 public class FilmService {
 
     private static final LocalDate MIN_RELEASE_DATE = LocalDate.of(1895, 12, 28);
+    private static final Logger log = LoggerFactory.getLogger(FilmService.class);
     private long filmsCounter = 0L;
 
     private final FilmStorage filmStorage;
@@ -73,17 +77,24 @@ public class FilmService {
         return savesFilm;
     }
 
-    public Collection<Film> getPopularFilms(Integer count) {
+    public List<Film> getPopularFilms(Long count) {
         Collection<Film> allFilms = filmStorage.getAll();
-        if (allFilms.size() < count) {
-            count = allFilms.size();
+        if (count > allFilms.size()) {
+            log.warn("Всего фильмов {}, а запрошено вывести {}",allFilms.size(),count);
+             return allFilms.stream()
+                     .sorted(Comparator.comparing(Film::getLikes).reversed())
+                     .collect(Collectors.toList());
+        } else {
+            return allFilms.stream()
+                    .sorted(Comparator.comparing(Film::getLikes).reversed())
+                    .collect(Collectors.toList())
+                    .subList(0,allFilms.size());
         }
-        return allFilms.stream().sorted(Comparator.comparing(Film::getLikes).reversed()).collect(Collectors.toList()).subList(0, count);
     }
 
     private void validFilm(Film film) {
         if (film.getReleaseDate().isBefore(MIN_RELEASE_DATE)) {
-            //log.debug("Релизная дата {}", film.getReleaseDate());
+            log.debug("Релизная дата {}", film.getReleaseDate());
             throw new ValidationException("Слишком ранняя дата релиза");
         }
     }
