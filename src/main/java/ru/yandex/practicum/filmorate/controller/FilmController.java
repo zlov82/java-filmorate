@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.Operations;
 import ru.yandex.practicum.filmorate.service.FilmService;
 
 import java.util.Collection;
@@ -17,6 +18,25 @@ import java.util.Collection;
 public class FilmController {
 
     private final FilmService filmService;
+
+    //получение всех фильмов
+    @GetMapping
+    public Collection<Film> getAllFilms() {
+        log.info("Запрос списка фильмов:");
+        Collection<Film> returnFilms = filmService.getAll();
+        log.info(returnFilms.toString());
+        return returnFilms;
+    }
+
+    @GetMapping("/{id}")
+    public Film getFilmById(@PathVariable Long id) {
+        return filmService.getFilmById(id);
+    }
+
+    @GetMapping("/popular")
+    public Collection<Film> getPopularFilms(@RequestParam(defaultValue = "10") Integer count) {
+        return filmService.getPopularFilms(count);
+    }
 
     //добавление фильма
     @PostMapping
@@ -35,13 +55,17 @@ public class FilmController {
         return filmService.updateFilm(updatedFilm);
     }
 
-    //получение всех фильмов
-    @GetMapping
-    public Collection<Film> getAllFilms() {
-        log.info("Запрос списка фильмов:");
-        Collection<Film> returnFilms = filmService.getAll();
-        log.info(returnFilms.toString());
-        return returnFilms;
+    @PutMapping("/{filmId}/like/{userId}")
+    public Film addLike(@PathVariable Long filmId,
+                        @PathVariable Long userId) {
+        return filmService.changeFilmsLikes(filmId, userId, Operations.ADD);
     }
+
+    @DeleteMapping("/{filmId}/like/{userId}")
+    public Film removeLike(@PathVariable Long filmId,
+                           @PathVariable Long userId) {
+        return filmService.changeFilmsLikes(filmId, userId, Operations.REMOVE);
+    }
+
 
 }

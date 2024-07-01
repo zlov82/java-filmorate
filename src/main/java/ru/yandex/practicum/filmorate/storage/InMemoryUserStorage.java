@@ -1,13 +1,14 @@
 package ru.yandex.practicum.filmorate.storage;
 
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.util.*;
 
 @Component
-public class InMemoryUserStorage implements UserStorage{
+public class InMemoryUserStorage implements UserStorage {
 
     private final Map<Long, User> users = new HashMap<>();
     private long usersCounter = 0L;
@@ -15,6 +16,7 @@ public class InMemoryUserStorage implements UserStorage{
     @Override
     public User save(User newUser) {
         newUser.setId(getUniqueUserId());
+        newUser.setFriends(new HashSet<>());
         users.put(newUser.getId(), newUser);
         return newUser;
     }
@@ -22,7 +24,7 @@ public class InMemoryUserStorage implements UserStorage{
     @Override
     public User update(User updatedUser) {
         if (isUserEmailIsBusy(updatedUser.getEmail(), updatedUser.getId())) {
-            throw new ValidationException("Email уже занят другим пользователем");
+            throw new NotFoundException("Email уже занят другим пользователем");
         }
 
         User savedUser = users.get(updatedUser.getId());
@@ -39,6 +41,11 @@ public class InMemoryUserStorage implements UserStorage{
     public Collection<User> getAll() {
         Collection<User> returnUsers = users.values();
         return returnUsers;
+    }
+
+    @Override
+    public User getUserById(Long userId) {
+        return users.get(userId);
     }
 
     private long getUniqueUserId() {
