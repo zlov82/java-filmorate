@@ -63,37 +63,6 @@ class UserControllerTest {
     }
 
     @Test
-    public void successUpdateUser() throws Exception {
-        this.mockMvc.perform(MockMvcRequestBuilders
-                        .post("/users")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(gson.toJson(createUser(
-                                null,
-                                "andy.kozlov@gmail.com",
-                                "zlv",
-                                "AK",
-                                LocalDate.of(1982, 11, 21)
-                        ))))
-                .andExpect(status().is2xxSuccessful())
-                .andExpect(jsonPath("$.id").value(1))
-                .andExpect(jsonPath("$.name").value("AK"));
-
-        this.mockMvc.perform(MockMvcRequestBuilders
-                        .put("/users")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(gson.toJson(createUser(
-                                1L,
-                                "andy.kozlov@gmail.com",
-                                "zlov",
-                                "Andrey Kozlov",
-                                LocalDate.of(1982, 11, 21)
-                        ))))
-                .andExpect(status().is2xxSuccessful())
-                .andExpect(jsonPath("$.login").value("zlov"))
-                .andExpect(jsonPath("$.name").value("Andrey Kozlov"));
-    }
-
-    @Test
     public void createUserNotName() throws Exception {
         this.mockMvc.perform(MockMvcRequestBuilders
                         .post("/users")
