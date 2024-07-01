@@ -57,12 +57,12 @@ public class FilmService {
     public Film changeFilmsLikes(Long filmId, Long userId, Operations action) {
         Film savesFilm = filmStorage.getFilmById(filmId);
         if (savesFilm == null) {
-            return null;
+            throw new NotFoundException("Нет такого фильма");
         }
 
         User savedUser = userStorage.getUserById(userId);
         if (savedUser == null) {
-            return null;
+            throw new NotFoundException("Нет такого пользователя");
         }
 
         Long likes = savesFilm.getLikes();
