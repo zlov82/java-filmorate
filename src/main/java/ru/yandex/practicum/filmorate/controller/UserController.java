@@ -19,7 +19,6 @@ public class UserController {
 
     private final UserService userService;
 
-    //получение списка всех пользователей
     @GetMapping
     public Collection<User> getAllUsers() {
         log.info("Запрос списка пользователей:");
@@ -30,18 +29,27 @@ public class UserController {
 
     @GetMapping("/{userId}")
     public User getUserById(@PathVariable Long userId) {
-        return userService.getUserById(userId);
+        log.info("Запрос информации о пользователе {}", userId);
+        User response = userService.getUserById(userId);
+        log.info("Ответ на запрос:\n{}", response);
+        return response;
     }
 
     @GetMapping("/{userId}/friends")
     public Collection<User> getUserFriends(@PathVariable Long userId) {
-        return userService.getUserFriends(userId);
+        log.info("Запрос на вывод друзей пользователя {}", userId);
+        Collection<User> response = userService.getUserFriends(userId);
+        log.info("Друзья пользователя {}:\n{}", userId, response);
+        return response;
     }
 
     @GetMapping("/{id}/friends/common/{otherId}")
     public Collection<User> getMutualFriends(@PathVariable Long id,
                                              @PathVariable Long otherId) {
-        return userService.getMutualFriends(id, otherId);
+        log.info("Запрос общих друзей пользователей {} {}", id, otherId);
+        Collection<User> response = userService.getMutualFriends(id, otherId);
+        log.info("Общие друзья:\n{}", response);
+        return response;
     }
 
     @PostMapping
@@ -55,7 +63,6 @@ public class UserController {
             log.debug("Не указано имя пользователя, будет взято из логина");
             newUser.setName(newUser.getLogin());
         }
-
         return userService.newUser(newUser);
     }
 

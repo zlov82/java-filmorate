@@ -30,19 +30,23 @@ public class FilmController {
 
     @GetMapping("/{id}")
     public Film getFilmById(@PathVariable Long id) {
+        log.info("Запрос фильма по ID {}", id);
         return filmService.getFilmById(id);
     }
 
     @GetMapping("/popular")
     public Collection<Film> getPopularFilms(@RequestParam(defaultValue = "10") Long count) {
+        log.info("Запрос {} популярных фильмов", count);
         return filmService.getPopularFilms(count);
     }
 
     //добавление фильма
     @PostMapping
     public Film createNewFilm(@Valid @RequestBody Film newFilm) {
-        log.info("Фильм для добавления {}", newFilm);
-        return filmService.createNewFilm(newFilm);
+        log.info("Запрос добавления фильма\n{}", newFilm);
+        Film response = filmService.createNewFilm(newFilm);
+        log.info("Ответ добавления нового фильма\n{}", response);
+        return response;
     }
 
     //обновление фильма
@@ -58,14 +62,15 @@ public class FilmController {
     @PutMapping("/{filmId}/like/{userId}")
     public Film addLike(@PathVariable Long filmId,
                         @PathVariable Long userId) {
+        log.info("Запрос на лай фильму {} пользователем {}", filmId, userId);
         return filmService.changeFilmsLikes(filmId, userId, Operations.ADD);
     }
 
     @DeleteMapping("/{filmId}/like/{userId}")
     public Film removeLike(@PathVariable Long filmId,
                            @PathVariable Long userId) {
+        log.info("Запрос на удаление фильму {} лайка от пользователя {}", filmId, userId);
         return filmService.changeFilmsLikes(filmId, userId, Operations.REMOVE);
     }
-
 
 }
