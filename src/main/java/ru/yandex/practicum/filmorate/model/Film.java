@@ -26,4 +26,7 @@ public class Film {
     private long likesCounter;
     @JsonIgnore
     private Set<Long> usersWhoLike;
+    Set<String> genres;
+    String mpa;
+
 }
