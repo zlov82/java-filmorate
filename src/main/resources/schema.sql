@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS film (
     releaseDate date    NOT NULL,
     duration integer    NOT NULL,
     mpa_id integer NOT NULL,
-    description varchar(1024)    NOT NULL,
+    description varchar(200)    NOT NULL,
     CONSTRAINT fk_film_mpa_id FOREIGN KEY(mpa_id) REFERENCES mpa (id)
 );
 
@@ -41,6 +41,5 @@ CREATE TABLE IF NOT EXISTS film_genre (
     film_id bigint NOT NULL,
     genre_id integer NOT NULL,
     CONSTRAINT fk_genre_film_id FOREIGN KEY (film_id) REFERENCES film (id),
-    CONSTRAINT fk_genre_id FOREIGN KEY (genre_id) REFERENCES genre (id),
-    CONSTRAINT uc_genre_id UNIQUE (genre_id)
+    CONSTRAINT fk_genre_id FOREIGN KEY (genre_id) REFERENCES genre (id)
 );
