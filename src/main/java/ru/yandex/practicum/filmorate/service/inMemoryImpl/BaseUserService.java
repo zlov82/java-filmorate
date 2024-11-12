@@ -8,7 +8,10 @@ import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.repository.UserStorage;
 import ru.yandex.practicum.filmorate.service.UserService;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 @Service
 @Qualifier("ImMemoryService")

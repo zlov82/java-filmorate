@@ -28,7 +28,7 @@ public class JdbcMpaStorage implements MpaStorage {
             params.put("id", id);
             return jdbc.queryForObject("select id, name from mpa where id = :id", params, mpaRowMapper);
         } catch (EmptyResultDataAccessException ignored) {
-            log.warn("Ошибка запроса рейтинга с id = {}",id);
+            log.warn("Ошибка запроса рейтинга с id = {}", id);
             throw new NotFoundException("Нет данных о запрошенном рейтинге");
         }
     }

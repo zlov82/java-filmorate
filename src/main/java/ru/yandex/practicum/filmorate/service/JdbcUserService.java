@@ -15,7 +15,7 @@ public class JdbcUserService implements UserService {
 
     private final UserStorage userStorage;
 
-    public JdbcUserService(@Qualifier("JdbcRepository")UserStorage userStorage) {
+    public JdbcUserService(@Qualifier("JdbcRepository") UserStorage userStorage) {
         this.userStorage = userStorage;
     }
 
@@ -53,7 +53,7 @@ public class JdbcUserService implements UserService {
 
         if (action.equals(Operations.ADD)) {
             userStorage.addFriend(user, friend);
-        }else {
+        } else {
             userStorage.removeFriend(user, friend);
         }
         return this.getUserFriends(userId1);

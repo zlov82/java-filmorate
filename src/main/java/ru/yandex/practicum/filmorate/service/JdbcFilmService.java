@@ -6,8 +6,8 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.FilmsLikes;
-import ru.yandex.practicum.filmorate.model.filmEntry.GenreEntity;
 import ru.yandex.practicum.filmorate.model.Operations;
+import ru.yandex.practicum.filmorate.model.filmEntry.GenreEntity;
 import ru.yandex.practicum.filmorate.repository.FilmStorage;
 import ru.yandex.practicum.filmorate.repository.GenreStorage;
 import ru.yandex.practicum.filmorate.repository.UserStorage;
@@ -91,7 +91,7 @@ public class JdbcFilmService implements FilmService {
         //берем все фильмы
         Collection<Film> filmsList = filmStorage.getAll();
         //в цикле плюсуем к каждому жанры
-        for(Film film : filmsList) {
+        for (Film film : filmsList) {
             film.setGenres(loadGenresByFilmId(film.getId()));
         }
         return filmsList;
@@ -111,7 +111,7 @@ public class JdbcFilmService implements FilmService {
 
         if (action.equals(Operations.ADD)) {
             filmStorage.addLike(filmId, userId);
-        }else {
+        } else {
             filmStorage.removeLike(filmId, userId);
         }
         return film;
@@ -134,24 +134,24 @@ public class JdbcFilmService implements FilmService {
     }
 
     private Set<Integer> convertGenreToInteger(Set<GenreEntity> genresSet) {
-    try {
-        if (genresSet.isEmpty()) {
-            throw new ValidationException("Нет жанров");
-        }
-        Set<Integer> genrelist = new HashSet<>();
-        for(GenreEntity genre : genresSet) {
-            if (!validatorService.validateGenreId(genre.getId())) {
-                throw new ValidationException("Жанра не существует");
+        try {
+            if (genresSet.isEmpty()) {
+                throw new ValidationException("Нет жанров");
             }
-            genrelist.add(genre.getId());
+            Set<Integer> genrelist = new HashSet<>();
+            for (GenreEntity genre : genresSet) {
+                if (!validatorService.validateGenreId(genre.getId())) {
+                    throw new ValidationException("Жанра не существует");
+                }
+                genrelist.add(genre.getId());
+            }
+            return genrelist;
+        } catch (NullPointerException ignored) {
+            return null;
         }
-        return genrelist;
-    }catch (NullPointerException ignored) {
-        return null;
-    }
     }
 
-    private Set<GenreEntity> loadGenresByFilmId (Long filmId) {
+    private Set<GenreEntity> loadGenresByFilmId(Long filmId) {
         List<Integer> filmGenres = genreStorage.getFilmGenres(filmId);
         Set<GenreEntity> genresSet = new HashSet<>();
         for (Integer genre : filmGenres) {

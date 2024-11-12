@@ -5,6 +5,7 @@ import ru.yandex.practicum.filmorate.model.Genre;
 import java.util.List;
 
 public interface GenreService {
-    public Genre findGenreById(int id);
-    public List<Genre> findGenres();
+    Genre findGenreById(int id);
+
+    List<Genre> findGenres();
 }

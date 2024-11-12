@@ -8,7 +8,6 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.FilmsLikes;
 import ru.yandex.practicum.filmorate.repository.FilmStorage;
 
-
 import java.time.LocalDate;
 import java.util.*;
 
@@ -49,11 +48,12 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public void addLike(long filmId, long userId){
+    public void addLike(long filmId, long userId) {
 
     }
+
     @Override
-    public void removeLike(long filmId, long userId){
+    public void removeLike(long filmId, long userId) {
 
     }
 

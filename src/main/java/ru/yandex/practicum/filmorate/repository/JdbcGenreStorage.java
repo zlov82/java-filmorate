@@ -3,7 +3,6 @@ package ru.yandex.practicum.filmorate.repository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
@@ -25,17 +24,17 @@ public class JdbcGenreStorage implements GenreStorage {
     @Override
     public List<Genre> getGenres() {
         Map<String, Object> params = new HashMap<>();
-         return jdbc.query("select id, name from genre order by id",params, genreRowMapper);
+        return jdbc.query("select id, name from genre order by id", params, genreRowMapper);
     }
 
     @Override
     public Genre getGenreById(int id) {
-        try{
+        try {
             Map<String, Object> params = new HashMap<>();
             params.put("id", id);
-            return jdbc.queryForObject("select id, name from genre where id=:id",params, genreRowMapper);
+            return jdbc.queryForObject("select id, name from genre where id=:id", params, genreRowMapper);
         } catch (EmptyResultDataAccessException e) {
-            log.warn("Жанр с id = {} не найден",id);
+            log.warn("Жанр с id = {} не найден", id);
             throw new NotFoundException("Жанр не найден");
         }
     }
@@ -45,7 +44,7 @@ public class JdbcGenreStorage implements GenreStorage {
         try {
             Map<String, Object> params = new HashMap<>();
             params.put("film_id", filmId);
-            return jdbc.queryForList("select genre_id from film_genre where film_id = :film_id", params,Integer.class);
+            return jdbc.queryForList("select genre_id from film_genre where film_id = :film_id", params, Integer.class);
         } catch (EmptyResultDataAccessException ignored) {
             return Collections.emptyList();
         }
@@ -59,7 +58,7 @@ public class JdbcGenreStorage implements GenreStorage {
             Map<String, Object> params = new HashMap<>();
             params.put("genre_id", genreId);
             params.put("film_id", film_id);
-            Integer intRes = jdbc.update("INSERT INTO  film_genre (film_id,genre_id) VALUES (:film_id,:genre_id)",params);
+            Integer intRes = jdbc.update("INSERT INTO  film_genre (film_id,genre_id) VALUES (:film_id,:genre_id)", params);
         }
         return false;
     }

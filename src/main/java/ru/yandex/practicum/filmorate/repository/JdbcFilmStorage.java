@@ -15,7 +15,10 @@ import ru.yandex.practicum.filmorate.model.FilmsLikes;
 import ru.yandex.practicum.filmorate.repository.mappers.FilmRowMapper;
 import ru.yandex.practicum.filmorate.repository.mappers.FilmsLikesRowMapper;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Repository
 @RequiredArgsConstructor
@@ -47,15 +50,15 @@ public class JdbcFilmStorage implements FilmStorage {
     @Override
     public Film update(Film updatedFilm) {
 
-        Map<String,Object> params = new HashMap<>();
+        Map<String, Object> params = new HashMap<>();
         params.put("film_id", updatedFilm.getId());
         params.put("n_name", updatedFilm.getName());
         params.put("n_desc", updatedFilm.getDescription());
         params.put("n_reldate", updatedFilm.getReleaseDate().toString());
         params.put("n_duration", updatedFilm.getDuration().toString());
-        params.put("n_mpa_id", updatedFilm.getMpa().getId());;
+        params.put("n_mpa_id", updatedFilm.getMpa().getId());
 
-        jdbc.update("UPDATE FILM set name = :n_name, description = :n_desc, releaseDate = :n_reldate, duration = :n_duration, mpa_id = :n_mpa_id  where id = :film_id",params);
+        jdbc.update("UPDATE FILM set name = :n_name, description = :n_desc, releaseDate = :n_reldate, duration = :n_duration, mpa_id = :n_mpa_id  where id = :film_id", params);
         return updatedFilm;
     }
 
@@ -72,17 +75,17 @@ public class JdbcFilmStorage implements FilmStorage {
 
     @Override
     public Collection<Film> getAll() {
-        return jdbc.query("select id, name, releasedate, duration, mpa_id, description from film order by id",filmRowMapper);
+        return jdbc.query("select id, name, releasedate, duration, mpa_id, description from film order by id", filmRowMapper);
     }
 
     @Override
-    public void addLike(long filmId, long userId){
+    public void addLike(long filmId, long userId) {
         SqlParameterSource sqlParameters = new MapSqlParameterSource("film_id", filmId).addValue("user_id", userId);
         jdbc.update("MERGE INTO film_like (film_id, user_id) KEY (film_id, user_id) VALUES (:film_id,:user_id)", sqlParameters);
     }
 
     @Override
-    public void removeLike(long filmId, long userId){
+    public void removeLike(long filmId, long userId) {
         SqlParameterSource sqlParameters = new MapSqlParameterSource("film_id", filmId).addValue("user_id", userId);
         jdbc.update("DELETE FROM film_like WHERE film_id = :film_id AND user_id =:user_id", sqlParameters);
     }
@@ -90,7 +93,7 @@ public class JdbcFilmStorage implements FilmStorage {
     @Override
     public List<FilmsLikes> getFilmsLikes() {
         try {
-            return jdbc.query("select film_id, count(user_id) as likes_count from film_like group by film_id order by likes_count desc",filmsLikesRowMapper);
+            return jdbc.query("select film_id, count(user_id) as likes_count from film_like group by film_id order by likes_count desc", filmsLikesRowMapper);
         } catch (EmptyResultDataAccessException ignored) {
             return null;
         }

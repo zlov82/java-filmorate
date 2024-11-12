@@ -5,6 +5,7 @@ import ru.yandex.practicum.filmorate.model.Mpa;
 import java.util.List;
 
 public interface MpaStorage {
-    public Mpa getMpaById(Integer id);
-    public List<Mpa> getMpaList();
+    Mpa getMpaById(Integer id);
+
+    List<Mpa> getMpaList();
 }
