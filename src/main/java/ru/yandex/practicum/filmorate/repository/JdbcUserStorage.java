@@ -41,7 +41,14 @@ public class JdbcUserStorage implements UserStorage {
 
     @Override
     public User update(User updatedUser) {
-        return null;
+        Map<String,Object> params = new HashMap<>();
+        params.put("name", updatedUser.getName());
+        params.put("email", updatedUser.getEmail());
+        params.put("login", updatedUser.getLogin());
+        params.put("birthday",updatedUser.getBirthday());
+        params.put("user_id", updatedUser.getId());
+        jdbc.update("UPDATE users SET email =:email, login =:login, name =:name,birthday=:birthday where id=:user_id", params);
+        return this.getUserById(updatedUser.getId());
     }
 
     @Override

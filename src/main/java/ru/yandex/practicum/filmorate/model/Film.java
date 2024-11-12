@@ -28,6 +28,6 @@ public class Film {
     private long likesCounter;
     @JsonIgnore
     private Set<Long> usersWhoLike;
-    private Set<GenreEntity> genres;
     private MpaEntity mpa;
+    private Set<GenreEntity> genres;
 }

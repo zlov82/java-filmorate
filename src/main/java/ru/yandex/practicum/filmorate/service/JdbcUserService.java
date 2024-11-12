@@ -29,7 +29,14 @@ public class JdbcUserService implements UserService {
 
     @Override
     public User update(User updatedUser) {
-        return null;
+        User saveduser = userStorage.getUserById(updatedUser.getId());
+        if (updatedUser.getName() == null) {
+            updatedUser.setName(saveduser.getName());
+        }
+        if (updatedUser.getBirthday() == null) {
+            updatedUser.setBirthday(saveduser.getBirthday());
+        }
+        return userStorage.update(updatedUser);
     }
 
     @Override

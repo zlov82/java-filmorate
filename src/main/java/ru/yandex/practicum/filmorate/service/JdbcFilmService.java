@@ -5,16 +5,14 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.FilmsLikes;
 import ru.yandex.practicum.filmorate.model.filmEntry.GenreEntity;
 import ru.yandex.practicum.filmorate.model.Operations;
 import ru.yandex.practicum.filmorate.repository.FilmStorage;
 import ru.yandex.practicum.filmorate.repository.GenreStorage;
 import ru.yandex.practicum.filmorate.repository.UserStorage;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -45,19 +43,20 @@ public class JdbcFilmService implements FilmService {
         if (!validatorService.validateMpaId(film.getMpa().getId())) {
             throw new ValidationException("Рейтинг не прошёл проверку");
         }
-
-        Set<Integer> genreList = convertGenreToInteger(film.getGenres());
         Film savedFilm = filmStorage.save(film);
-        // получить id фильма и сохранить жанры
         film.setId(savedFilm.getId());
-        genreStorage.saveFilmGenres(film.getId(), genreList);
 
-        return film;
+        if (film.getGenres() != null) {
+            Set<Integer> genreList = convertGenreToInteger(film.getGenres());
+            genreStorage.saveFilmGenres(film.getId(), genreList);
+        }
+
+        return this.getFilmById(film.getId());
     }
 
     @Override
     public Film updateFilm(Film film) {
-        Film savedFilm = filmStorage.getFilmById(film.getId()); //если запрощенного фильма не будет - код ответа 404
+        Film savedFilm = this.getFilmById(film.getId());
         if (film.getReleaseDate() != null) {
             if (!validatorService.validateReleaseDate(film.getReleaseDate())) {
                 throw new ValidationException("Слишком ранняя дата релиза");
@@ -83,11 +82,8 @@ public class JdbcFilmService implements FilmService {
         if (film.getGenres() != null) {
             Set<Integer> genreList = convertGenreToInteger(film.getGenres());
             genreStorage.saveFilmGenres(film.getId(), genreList);
-        } else {
-            film.setGenres(loadGenresByFilmId(savedFilm.getId()));
         }
-
-        return film;
+        return this.getFilmById(film.getId());
     }
 
     @Override
@@ -104,14 +100,14 @@ public class JdbcFilmService implements FilmService {
     @Override
     public Film getFilmById(Long id) {
         Film film = filmStorage.getFilmById(id);
+        //добавляем жарны
         film.setGenres(loadGenresByFilmId(id));
         return film;
     }
 
     @Override
     public Film changeFilmsLikes(Long filmId, Long userId, Operations action) {
-        Film film = filmStorage.getFilmById(filmId);
-        film.setGenres(loadGenresByFilmId(film.getId()));
+        Film film = this.getFilmById(filmId);
 
         if (action.equals(Operations.ADD)) {
             filmStorage.addLike(filmId, userId);
@@ -123,10 +119,22 @@ public class JdbcFilmService implements FilmService {
 
     @Override
     public List<Film> getPopularFilms(Long count) {
-        return List.of();
+        List<FilmsLikes> filmsLikes = filmStorage.getFilmsLikes();
+        List<Film> filmList = new ArrayList<>();
+
+        if (filmsLikes.size() > count) {
+            filmsLikes = filmsLikes.subList(0, Math.toIntExact(count));
+        }
+
+        for (FilmsLikes filmsLike : filmsLikes) {
+            filmList.add(this.getFilmById(filmsLike.getFilmId()));
+        }
+
+        return filmList;
     }
 
     private Set<Integer> convertGenreToInteger(Set<GenreEntity> genresSet) {
+    try {
         if (genresSet.isEmpty()) {
             throw new ValidationException("Нет жанров");
         }
@@ -138,11 +146,14 @@ public class JdbcFilmService implements FilmService {
             genrelist.add(genre.getId());
         }
         return genrelist;
+    }catch (NullPointerException ignored) {
+        return null;
+    }
     }
 
-    private HashSet<GenreEntity> loadGenresByFilmId (Long filmId) {
+    private Set<GenreEntity> loadGenresByFilmId (Long filmId) {
         List<Integer> filmGenres = genreStorage.getFilmGenres(filmId);
-        HashSet<GenreEntity> genresSet = new HashSet<>();
+        Set<GenreEntity> genresSet = new HashSet<>();
         for (Integer genre : filmGenres) {
             GenreEntity entity = new GenreEntity();
             entity.setId(genre);
