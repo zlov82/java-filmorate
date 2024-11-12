@@ -43,3 +43,11 @@ CREATE TABLE IF NOT EXISTS film_genre (
     CONSTRAINT fk_genre_film_id FOREIGN KEY (film_id) REFERENCES film (id),
     CONSTRAINT fk_genre_id FOREIGN KEY (genre_id) REFERENCES genre (id)
 );
+
+CREATE TABLE IF NOT EXISTS friendship (
+    user_id bigint NOT NULL,
+    friend_id bigint NOT NULL,
+    CONSTRAINT fc_friend_user_id FOREIGN KEY (user_id) REFERENCES users (id),
+    CONSTRAINT fc_friend_friend_id FOREIGN KEY (friend_id) REFERENCES users (id)
+);
+

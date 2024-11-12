@@ -4,22 +4,19 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.Operations;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.repository.FilmStorage;
 import ru.yandex.practicum.filmorate.repository.UserStorage;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 @Service
 @Qualifier("JdbcUserService")
 public class JdbcUserService implements UserService {
 
     private final UserStorage userStorage;
-    private final FilmStorage filmStorage;
 
-    public JdbcUserService(@Qualifier("JdbcRepository")UserStorage userStorage, @Qualifier("JdbcFilmStorage")FilmStorage filmStorage) {
+    public JdbcUserService(@Qualifier("JdbcRepository")UserStorage userStorage) {
         this.userStorage = userStorage;
-        this.filmStorage = filmStorage;
     }
 
     @Override
@@ -51,16 +48,37 @@ public class JdbcUserService implements UserService {
 
     @Override
     public Collection<User> changeFriends(long userId1, long userId2, Operations action) {
-        return List.of();
+        User user = this.getUserById(userId1);
+        User friend = this.getUserById(userId2);
+
+        if (action.equals(Operations.ADD)) {
+            userStorage.addFriend(user, friend);
+        }else {
+            userStorage.removeFriend(user, friend);
+        }
+        return this.getUserFriends(userId1);
     }
 
     @Override
     public Collection<User> getUserFriends(Long userId) {
-        return List.of();
+        User user = userStorage.getUserById(userId);
+        return userStorage.getUserFriends(user);
     }
 
     @Override
     public Collection<User> getMutualFriends(Long id, Long otherId) {
-        return null;
+        Collection<User> user1Friends = this.getUserFriends(id);
+        Collection<User> user2Friends = this.getUserFriends(otherId);
+
+        Collection<User> commonFriends = new ArrayList<>();
+
+        for (User user1Friend : user1Friends) {
+            for (User user2Friend : user2Friends) {
+                if (user1Friend.getId().equals(user2Friend.getId())) {
+                    commonFriends.add(user1Friend);
+                }
+            }
+        }
+        return commonFriends;
     }
 }
