@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.model.FilmEnty;
+package ru.yandex.practicum.filmorate.model.filmEntry;
 
 import lombok.Data;
 

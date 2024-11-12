@@ -1,19 +1,24 @@
-package ru.yandex.practicum.filmorate.service;
+package ru.yandex.practicum.filmorate.service.inMemoryImpl;
 
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Operations;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.repository.UserStorage;
+import ru.yandex.practicum.filmorate.service.UserService;
 
 import java.util.*;
 
 @Service
-@RequiredArgsConstructor
-public class BaseUserService implements UserService{
+@Qualifier("ImMemoryService")
+public class BaseUserService implements UserService {
 
     private final UserStorage userStorage;
+
+    public BaseUserService(@Qualifier("InMemoryRepository") UserStorage userStorage) {
+        this.userStorage = userStorage;
+    }
 
     public User newUser(User newUser) {
         return userStorage.save(newUser);

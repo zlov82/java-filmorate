@@ -5,8 +5,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
-import ru.yandex.practicum.filmorate.model.FilmEnty.GenreEntity;
-import ru.yandex.practicum.filmorate.model.FilmEnty.MpaEntity;
+import ru.yandex.practicum.filmorate.model.filmEntry.GenreEntity;
+import ru.yandex.practicum.filmorate.model.filmEntry.MpaEntity;
 
 import java.time.LocalDate;
 import java.util.Set;

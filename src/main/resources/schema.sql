@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS users (
     email varchar(100)   NOT NULL,
     login varchar(100)   NOT NULL,
     name varchar(100)   NOT NULL,
-    birthday date    NOT NULL,
+    birthday date,
     CONSTRAINT uc_user_email UNIQUE (email),
     CONSTRAINT uc_user_login UNIQUE (login)
 );
