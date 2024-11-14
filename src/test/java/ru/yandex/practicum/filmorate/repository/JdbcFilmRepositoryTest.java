@@ -29,7 +29,7 @@ public class JdbcFilmRepositoryTest {
         film.setId(1L);
         film.setName("Film1");
         film.setDescription("Description1");
-        film.setReleaseDate(LocalDate.of(1988,7,12));
+        film.setReleaseDate(LocalDate.of(1988, 7, 12));
         film.setDuration(133);
 
         MpaEntity mpaEntity = new MpaEntity();
@@ -44,7 +44,7 @@ public class JdbcFilmRepositoryTest {
         film.setId(2L);
         film.setName("Film2");
         film.setDescription("Description2");
-        film.setReleaseDate(LocalDate.of(2006,4,13));
+        film.setReleaseDate(LocalDate.of(2006, 4, 13));
         film.setDuration(110);
 
         MpaEntity mpaEntity = new MpaEntity();
@@ -58,7 +58,7 @@ public class JdbcFilmRepositoryTest {
         Film film = new Film();
         film.setName("Film3");
         film.setDescription("Description3");
-        film.setReleaseDate(LocalDate.of(1982,11,21));
+        film.setReleaseDate(LocalDate.of(1982, 11, 21));
         film.setDuration(42);
 
         MpaEntity mpaEntity = new MpaEntity();
@@ -68,7 +68,7 @@ public class JdbcFilmRepositoryTest {
         return film;
     }
 
-    static Collection<Film> testFilms = new ArrayList<>(Arrays.asList(testFilm(),testFilm2()));
+    static Collection<Film> testFilms = new ArrayList<>(Arrays.asList(testFilm(), testFilm2()));
 
     @Test
     @DisplayName("Получение фильма по id")
@@ -111,7 +111,7 @@ public class JdbcFilmRepositoryTest {
         updatedFilm.setName("UpdatedName");
         updatedFilm.setDescription("UpdatedDescription");
         MpaEntity mpaEntity = new MpaEntity();
-        mpaEntity.setId(updatedFilm.getMpa().getId()+1);
+        mpaEntity.setId(updatedFilm.getMpa().getId() + 1);
         updatedFilm.setMpa(mpaEntity);
 
         filmStorage.update(updatedFilm);
@@ -127,10 +127,10 @@ public class JdbcFilmRepositoryTest {
         FilmsLikes fl = new FilmsLikes();
         fl.setFilmId(1);
         fl.setLikesCount(2);
-        List<FilmsLikes> testFilmLikes= new ArrayList<>(Arrays.asList(fl));
+        List<FilmsLikes> testFilmLikes = new ArrayList<>(Arrays.asList(fl));
 
-        filmStorage.addLike(1,1);
-        filmStorage.addLike(1,2);
+        filmStorage.addLike(1, 1);
+        filmStorage.addLike(1, 2);
         List<FilmsLikes> savedLikes = filmStorage.getFilmsLikes();
 
         assertThat(savedLikes)
@@ -144,11 +144,11 @@ public class JdbcFilmRepositoryTest {
         FilmsLikes fl = new FilmsLikes();
         fl.setFilmId(2);
         fl.setLikesCount(1);
-        List<FilmsLikes> testFilmLikes= new ArrayList<>(Arrays.asList(fl));
+        List<FilmsLikes> testFilmLikes = new ArrayList<>(Arrays.asList(fl));
 
-        filmStorage.addLike(2,1);
-        filmStorage.addLike(2,2);
-        filmStorage.removeLike(2,1);
+        filmStorage.addLike(2, 1);
+        filmStorage.addLike(2, 2);
+        filmStorage.removeLike(2, 1);
         List<FilmsLikes> savedLikes = filmStorage.getFilmsLikes();
 
         assertThat(savedLikes)

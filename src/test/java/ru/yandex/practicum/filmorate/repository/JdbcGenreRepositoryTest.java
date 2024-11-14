@@ -22,14 +22,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class JdbcGenreRepositoryTest {
     private final JdbcGenreStorage jdbcGenreStorage;
 
-    static Genre testGenre1 () {
+    static Genre testGenre1() {
         Genre genre = new Genre();
         genre.setId(1);
         genre.setName("Комедия");
         return genre;
     }
 
-    static Genre testGenre2 () {
+    static Genre testGenre2() {
         Genre genre = new Genre();
         genre.setId(2);
         genre.setName("Драма");

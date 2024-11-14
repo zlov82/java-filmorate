@@ -19,8 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 @Import({JdbcMpaStorage.class, MpaRowMapper.class})
 @DisplayName("Тестирование рейтинга")
-public class JdbcMpaRepositoryTest
-{
+public class JdbcMpaRepositoryTest {
     public static final Integer mpaId = 1;
     private final JdbcMpaStorage mpaStorage;
 

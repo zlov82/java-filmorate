@@ -35,7 +35,6 @@ class FilmControllerTest {
 
     @BeforeEach
     public void setUp() {
-        //this.mockMvc = MockMvcBuilders.standaloneSetup(new FilmController().build());
         this.mockMvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext).build();
     }
 
