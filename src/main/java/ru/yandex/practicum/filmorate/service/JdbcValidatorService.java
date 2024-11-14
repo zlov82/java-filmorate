@@ -31,9 +31,11 @@ public class JdbcValidatorService implements ValidatorService {
 
     @Override
     public boolean validateMpaId(Integer mpaId) {
-        List<Mpa> mpaList =  mpaStorage.getMpaList();
+        List<Mpa> mpaList = mpaStorage.getMpaList();
         for (Mpa mpa : mpaList) {
-            if (mpa.getId().equals(mpaId)) {return true;}
+            if (mpa.getId().equals(mpaId)) {
+                return true;
+            }
         }
         log.warn("id рейтинга {} не прошел проверку", mpaId);
         return false;
@@ -42,8 +44,10 @@ public class JdbcValidatorService implements ValidatorService {
     @Override
     public boolean validateGenreId(Integer genreId) {
         List<Genre> genreList = genreStorage.getGenres();
-        for(Genre genre : genreList) {
-            if (genre.getId().equals(genreId)) {return true;}
+        for (Genre genre : genreList) {
+            if (genre.getId().equals(genreId)) {
+                return true;
+            }
         }
         log.warn("Жанр с id = {} не прошел проверку", genreId);
         return false;

@@ -12,5 +12,5 @@ public interface GenreStorage {
 
     List<Integer> getFilmGenres(long filmId);
 
-    boolean saveFilmGenres(long film_id, Set<Integer> genres);
+    boolean saveFilmGenres(long filmId, Set<Integer> genres);
 }
