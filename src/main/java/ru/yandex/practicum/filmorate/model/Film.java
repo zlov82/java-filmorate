@@ -5,10 +5,9 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
-import ru.yandex.practicum.filmorate.model.filmEntry.GenreEntity;
-import ru.yandex.practicum.filmorate.model.filmEntry.MpaEntity;
 
 import java.time.LocalDate;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**
@@ -28,6 +27,6 @@ public class Film {
     private long likesCounter;
     @JsonIgnore
     private Set<Long> usersWhoLike;
-    private MpaEntity mpa;
-    private Set<GenreEntity> genres;
+    private Mpa mpa;
+    private LinkedHashSet<Genre> genres;
 }

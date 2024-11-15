@@ -1,6 +1,6 @@
 package ru.yandex.practicum.filmorate.model;
 
-import jakarta.validation.constraints.NotBlank;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.validation.constraints.Positive;
 import lombok.Data;
 
@@ -8,6 +8,6 @@ import lombok.Data;
 public class Mpa {
     @Positive
     private Integer id;
-    @NotBlank
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private String name;
 }

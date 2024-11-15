@@ -8,7 +8,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.context.annotation.Import;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.FilmsLikes;
-import ru.yandex.practicum.filmorate.model.filmEntry.MpaEntity;
+import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.repository.mappers.FilmRowMapper;
 import ru.yandex.practicum.filmorate.repository.mappers.FilmsLikesRowMapper;
 
@@ -32,9 +32,9 @@ public class JdbcFilmRepositoryTest {
         film.setReleaseDate(LocalDate.of(1988, 7, 12));
         film.setDuration(133);
 
-        MpaEntity mpaEntity = new MpaEntity();
-        mpaEntity.setId(2);
-        film.setMpa(mpaEntity);
+        Mpa mpa = new Mpa();
+        mpa.setId(2);
+        film.setMpa(mpa);
 
         return film;
     }
@@ -47,9 +47,9 @@ public class JdbcFilmRepositoryTest {
         film.setReleaseDate(LocalDate.of(2006, 4, 13));
         film.setDuration(110);
 
-        MpaEntity mpaEntity = new MpaEntity();
-        mpaEntity.setId(1);
-        film.setMpa(mpaEntity);
+        Mpa mpa = new Mpa();
+        mpa.setId(1);
+        film.setMpa(mpa);
 
         return film;
     }
@@ -61,9 +61,9 @@ public class JdbcFilmRepositoryTest {
         film.setReleaseDate(LocalDate.of(1982, 11, 21));
         film.setDuration(42);
 
-        MpaEntity mpaEntity = new MpaEntity();
-        mpaEntity.setId(1);
-        film.setMpa(mpaEntity);
+        Mpa mpa = new Mpa();
+        mpa.setId(1);
+        film.setMpa(mpa);
 
         return film;
     }
@@ -110,9 +110,10 @@ public class JdbcFilmRepositoryTest {
         Film updatedFilm = testFilm2();
         updatedFilm.setName("UpdatedName");
         updatedFilm.setDescription("UpdatedDescription");
-        MpaEntity mpaEntity = new MpaEntity();
-        mpaEntity.setId(updatedFilm.getMpa().getId() + 1);
-        updatedFilm.setMpa(mpaEntity);
+
+        Mpa mpa = new Mpa();
+        mpa.setId(updatedFilm.getMpa().getId() + 1);
+        updatedFilm.setMpa(mpa);
 
         filmStorage.update(updatedFilm);
         Film film = filmStorage.getFilmById(updatedFilm.getId());

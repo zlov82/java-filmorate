@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.repository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
@@ -53,14 +54,18 @@ public class JdbcGenreStorage implements GenreStorage {
     @Override
     public boolean saveFilmGenres(long filmId, Set<Integer> genres) {
         deleteFilmGenres(filmId);
-        //потом добавим заново
-        for (Integer genreId : genres) {
-            Map<String, Object> params = new HashMap<>();
-            params.put("genre_id", genreId);
-            params.put("film_id", filmId);
-            Integer intRes = jdbc.update("INSERT INTO  film_genre (film_id,genre_id) VALUES (:film_id,:genre_id)", params);
+        try {
+            for (Integer genreId : genres) {
+                Map<String, Object> params = new HashMap<>();
+                params.put("genre_id", genreId);
+                params.put("film_id", filmId);
+                Integer intRes = jdbc.update("INSERT INTO  film_genre (film_id,genre_id) VALUES (:film_id,:genre_id)", params);
+            }
+            return true;
+        } catch (DataAccessException ignored) {
+            return false;
         }
-        return false;
+
     }
 
     private void deleteFilmGenres(long film_id) {

@@ -1,6 +1,6 @@
 package ru.yandex.practicum.filmorate.model;
 
-import jakarta.validation.constraints.NotBlank;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
@@ -8,6 +8,6 @@ import lombok.Data;
 public class Genre {
     @Size(min = 1)
     public Integer id;
-    @NotBlank
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     public String name;
 }

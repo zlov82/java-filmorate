@@ -6,11 +6,10 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.FilmsLikes;
+import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.Operations;
-import ru.yandex.practicum.filmorate.model.filmEntry.GenreEntity;
 import ru.yandex.practicum.filmorate.repository.FilmStorage;
 import ru.yandex.practicum.filmorate.repository.GenreStorage;
-import ru.yandex.practicum.filmorate.repository.UserStorage;
 
 import java.util.*;
 
@@ -22,13 +21,11 @@ public class JdbcFilmService implements FilmService {
     private final FilmStorage filmStorage;
     private final GenreStorage genreStorage;
     private final ValidatorService validatorService;
-    private final UserStorage userStorage;
 
-    public JdbcFilmService(@Qualifier("JdbcFilmStorage") FilmStorage filmStorage, GenreStorage genreStorage, ValidatorService validatorService, @Qualifier("JdbcRepository") UserStorage userStorage) {
+    public JdbcFilmService(@Qualifier("JdbcFilmStorage") FilmStorage filmStorage, GenreStorage genreStorage, ValidatorService validatorService) {
         this.filmStorage = filmStorage;
         this.genreStorage = genreStorage;
         this.validatorService = validatorService;
-        this.userStorage = userStorage;
     }
 
     @Override
@@ -133,13 +130,13 @@ public class JdbcFilmService implements FilmService {
         return filmList;
     }
 
-    private Set<Integer> convertGenreToInteger(Set<GenreEntity> genresSet) {
+    private Set<Integer> convertGenreToInteger(Set<Genre> genresSet) {
         try {
             if (genresSet.isEmpty()) {
                 throw new ValidationException("Нет жанров");
             }
             Set<Integer> genrelist = new HashSet<>();
-            for (GenreEntity genre : genresSet) {
+            for (Genre genre : genresSet) {
                 if (!validatorService.validateGenreId(genre.getId())) {
                     throw new ValidationException("Жанра не существует");
                 }
@@ -151,13 +148,13 @@ public class JdbcFilmService implements FilmService {
         }
     }
 
-    private Set<GenreEntity> loadGenresByFilmId(Long filmId) {
+    private LinkedHashSet<Genre> loadGenresByFilmId(Long filmId) {
         List<Integer> filmGenres = genreStorage.getFilmGenres(filmId);
-        Set<GenreEntity> genresSet = new HashSet<>();
-        for (Integer genre : filmGenres) {
-            GenreEntity entity = new GenreEntity();
-            entity.setId(genre);
-            genresSet.add(entity);
+        LinkedHashSet<Genre> genresSet = new LinkedHashSet<>();
+        for (Integer genreId : filmGenres) {
+            Genre genre = new Genre();
+            genre.setId(genreId);
+            genresSet.add(genre);
         }
         return genresSet;
     }
