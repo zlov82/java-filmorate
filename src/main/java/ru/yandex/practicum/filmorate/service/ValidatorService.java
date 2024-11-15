@@ -6,9 +6,9 @@ import java.time.LocalDate;
 import java.util.Set;
 
 public interface ValidatorService {
-    public boolean validateReleaseDate(LocalDate releaseDate);
+    boolean validateReleaseDate(LocalDate releaseDate);
 
-    public boolean validateMpaId(Integer mpaId);
+    boolean validateMpaId(Integer mpaId);
 
-    public boolean validateGenres(Set<Genre> genres);
+    boolean validateGenres(Set<Genre> genres);
 }

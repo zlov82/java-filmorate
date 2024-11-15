@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.FilmsLikes;
+import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.Operations;
 import ru.yandex.practicum.filmorate.repository.FilmStorage;
 import ru.yandex.practicum.filmorate.repository.GenreStorage;
@@ -103,7 +104,7 @@ public class JdbcFilmService implements FilmService {
         //в цикле плюсуем к каждому жанры
         for (Film film : filmsList) {
             film.setMpa(mpaStorage.getMpaById(film.getMpa().getId()));
-            film.setGenres(genreStorage.getFilmGenres(film.getId()));
+            film.setGenres((LinkedHashSet<Genre>)genreStorage.getFilmGenres(film.getId()));
         }
         return filmsList;
     }
@@ -112,7 +113,7 @@ public class JdbcFilmService implements FilmService {
     public Film getFilmById(Long id) {
         Film film = filmStorage.getFilmById(id);
         film.setMpa(mpaStorage.getMpaById(film.getMpa().getId()));
-        film.setGenres(genreStorage.getFilmGenres(id));
+        film.setGenres((LinkedHashSet<Genre>) genreStorage.getFilmGenres(id));
         return film;
     }
 

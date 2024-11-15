@@ -41,7 +41,7 @@ public class JdbcGenreStorage implements GenreStorage {
     }
 
     @Override
-    public LinkedHashSet<Genre> getFilmGenres(long filmId) {
+    public Set<Genre> getFilmGenres(long filmId) {
         try {
             Map<String, Object> params = new HashMap<>();
             params.put("film_id", filmId);
@@ -53,7 +53,7 @@ public class JdbcGenreStorage implements GenreStorage {
     }
 
     @Override
-    public boolean saveFilmGenres(long filmId, LinkedHashSet<Genre> genres) {
+    public boolean saveFilmGenres(long filmId, Set<Genre> genres) {
         deleteFilmGenres(filmId);
         try {
             for (Genre genre : genres) {
