@@ -53,15 +53,16 @@ public class JdbcGenreStorage implements GenreStorage {
     }
 
     @Override
-    public boolean saveFilmGenres(long filmId, Set<Integer> genres) {
+    public boolean saveFilmGenres(long filmId, LinkedHashSet<Genre> genres) {
         deleteFilmGenres(filmId);
         try {
-            for (Integer genreId : genres) {
+            for (Genre genre : genres) {
                 Map<String, Object> params = new HashMap<>();
-                params.put("genre_id", genreId);
+                params.put("genre_id", genre.getId());
                 params.put("film_id", filmId);
                 Integer intRes = jdbc.update("INSERT INTO  film_genre (film_id,genre_id) VALUES (:film_id,:genre_id)", params);
             }
+
             return true;
         } catch (DataAccessException ignored) {
             return false;

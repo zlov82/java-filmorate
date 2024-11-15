@@ -9,7 +9,9 @@ import ru.yandex.practicum.filmorate.repository.GenreStorage;
 import ru.yandex.practicum.filmorate.repository.MpaStorage;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Slf4j
 @Component
@@ -42,14 +44,20 @@ public class JdbcValidatorService implements ValidatorService {
     }
 
     @Override
-    public boolean validateGenreId(Integer genreId) {
-        List<Genre> genreList = genreStorage.getGenres();
-        for (Genre genre : genreList) {
-            if (genre.getId().equals(genreId)) {
-                return true;
-            }
+    public boolean validateGenres(Set<Genre> genres) {
+        List<Genre> allGenres = genreStorage.getGenres();
+        List<Integer> rangeOfGenres = new ArrayList<>();
+        for (Genre range : allGenres) {
+            rangeOfGenres.add(range.getId());
         }
-        log.warn("Жанр с id = {} не прошел проверку", genreId);
-        return false;
+
+        for (Genre filmGenre : genres) {
+            if (!rangeOfGenres.contains(filmGenre.getId())) {
+                return false;
+            }
+
+        }
+        return true;
     }
+
 }

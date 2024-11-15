@@ -4,7 +4,6 @@ import ru.yandex.practicum.filmorate.model.Genre;
 
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 
 public interface GenreStorage {
     List<Genre> getGenres();
@@ -13,5 +12,5 @@ public interface GenreStorage {
 
     LinkedHashSet<Genre> getFilmGenres(long filmId);
 
-    boolean saveFilmGenres(long filmId, Set<Integer> genres);
+    boolean saveFilmGenres(long filmId, LinkedHashSet<Genre> genres);
 }
