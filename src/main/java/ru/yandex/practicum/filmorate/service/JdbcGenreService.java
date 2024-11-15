@@ -14,12 +14,12 @@ public class JdbcGenreService implements GenreService {
     private final GenreStorage genreStorage;
 
     @Override
-    public Genre findGenreById(int id) {
+    public Genre getGenreById(int id) {
         return genreStorage.getGenreById(id);
     }
 
     @Override
-    public List<Genre> findGenres() {
+    public List<Genre> getAllGenres() {
         return genreStorage.getGenres();
     }
 }

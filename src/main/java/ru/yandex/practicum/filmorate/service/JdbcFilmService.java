@@ -10,6 +10,7 @@ import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.Operations;
 import ru.yandex.practicum.filmorate.repository.FilmStorage;
 import ru.yandex.practicum.filmorate.repository.GenreStorage;
+import ru.yandex.practicum.filmorate.repository.JdbcMpaStorage;
 
 import java.util.*;
 
@@ -21,11 +22,13 @@ public class JdbcFilmService implements FilmService {
     private final FilmStorage filmStorage;
     private final GenreStorage genreStorage;
     private final ValidatorService validatorService;
+    private final JdbcMpaStorage mpaStorage;
 
-    public JdbcFilmService(@Qualifier("JdbcFilmStorage") FilmStorage filmStorage, GenreStorage genreStorage, ValidatorService validatorService) {
+    public JdbcFilmService(@Qualifier("JdbcFilmStorage") FilmStorage filmStorage, GenreStorage genreStorage, ValidatorService validatorService, JdbcMpaStorage jdbcMpaStorage) {
         this.filmStorage = filmStorage;
         this.genreStorage = genreStorage;
         this.validatorService = validatorService;
+        this.mpaStorage = jdbcMpaStorage;
     }
 
     @Override
@@ -89,7 +92,8 @@ public class JdbcFilmService implements FilmService {
         Collection<Film> filmsList = filmStorage.getAll();
         //в цикле плюсуем к каждому жанры
         for (Film film : filmsList) {
-            film.setGenres(loadGenresByFilmId(film.getId()));
+            film.setMpa(mpaStorage.getMpaById(film.getMpa().getId()));
+            film.setGenres(genreStorage.getFilmGenres(film.getId()));
         }
         return filmsList;
     }
@@ -97,8 +101,8 @@ public class JdbcFilmService implements FilmService {
     @Override
     public Film getFilmById(Long id) {
         Film film = filmStorage.getFilmById(id);
-        //добавляем жарны
-        film.setGenres(loadGenresByFilmId(id));
+        film.setMpa(mpaStorage.getMpaById(film.getMpa().getId()));
+        film.setGenres(genreStorage.getFilmGenres(id));
         return film;
     }
 
@@ -148,14 +152,5 @@ public class JdbcFilmService implements FilmService {
         }
     }
 
-    private LinkedHashSet<Genre> loadGenresByFilmId(Long filmId) {
-        List<Integer> filmGenres = genreStorage.getFilmGenres(filmId);
-        LinkedHashSet<Genre> genresSet = new LinkedHashSet<>();
-        for (Integer genreId : filmGenres) {
-            Genre genre = new Genre();
-            genre.setId(genreId);
-            genresSet.add(genre);
-        }
-        return genresSet;
-    }
+
 }

@@ -12,9 +12,7 @@ MERGE INTO genre (name) KEY(name) VALUES('Мультфильм');
 MERGE INTO genre (name) KEY(name) VALUES('Триллер');
 MERGE INTO genre (name) KEY(name) VALUES('Документальный');
 MERGE INTO genre (name) KEY(name) VALUES('Боевик');
-MERGE INTO genre (name) KEY(name) VALUES('Ужасы');
-MERGE INTO genre (name) KEY(name) VALUES('Роадмуви');
-MERGE INTO genre (name) KEY(name) VALUES('Фантастика');
+
 
 /*
 

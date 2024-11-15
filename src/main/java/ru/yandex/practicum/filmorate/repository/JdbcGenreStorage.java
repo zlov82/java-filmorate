@@ -41,13 +41,14 @@ public class JdbcGenreStorage implements GenreStorage {
     }
 
     @Override
-    public List<Integer> getFilmGenres(long filmId) {
+    public LinkedHashSet<Genre> getFilmGenres(long filmId) {
         try {
             Map<String, Object> params = new HashMap<>();
             params.put("film_id", filmId);
-            return jdbc.queryForList("select genre_id from film_genre where film_id = :film_id", params, Integer.class);
+            List<Genre> genreList =  jdbc.query("select id, name from genre where id in (SELECT genre_id FROM FILM_GENRE where film_id = :film_id)",params,genreRowMapper);
+            return new LinkedHashSet<>(genreList);
         } catch (EmptyResultDataAccessException ignored) {
-            return Collections.emptyList();
+            return null;
         }
     }
 
