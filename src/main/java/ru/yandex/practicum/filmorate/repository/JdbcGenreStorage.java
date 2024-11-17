@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
@@ -43,17 +42,6 @@ public class JdbcGenreStorage implements GenreStorage {
         }
     }
 
-    @Override
-    public Set<Genre> getFilmGenres(long filmId) {
-        try {
-            Map<String, Object> params = new HashMap<>();
-            params.put("film_id", filmId);
-            List<Genre> genreList = jdbc.query("select id, name from genre where id in (SELECT genre_id FROM FILM_GENRE where film_id = :film_id)", params, genreRowMapper);
-            return new LinkedHashSet<>(genreList);
-        } catch (EmptyResultDataAccessException ignored) {
-            return null;
-        }
-    }
 
     @Override
     public boolean saveFilmGenres(long filmId, Set<Genre> genres) {
@@ -97,8 +85,23 @@ public class JdbcGenreStorage implements GenreStorage {
             genre.setName(rs.getString("name"));
             film.addGenre(genre);
         });
+    }
 
+    @Override
+    public void loadFilmGenres(Film film) {
+        try {
+            Map<String, Object> params = new HashMap<>();
+            params.put("film_id", film.getId());
+            String sql = "select id, name "+
+                         "from genre "+
+                         "where id in (SELECT genre_id FROM FILM_GENRE where film_id = :film_id)";
+            List<Genre> genreList = jdbc.query(sql, params, genreRowMapper);
+            for (Genre genre : genreList) {
+                film.addGenre(genre);
+            }
+        } catch (EmptyResultDataAccessException ignored) {
 
+        }
     }
 
     private void deleteFilmGenres(long film_id) {

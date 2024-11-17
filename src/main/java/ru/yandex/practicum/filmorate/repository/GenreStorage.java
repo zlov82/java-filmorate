@@ -11,9 +11,9 @@ public interface GenreStorage {
 
     Genre getGenreById(int id);
 
-    Set<Genre> getFilmGenres(long filmId);
-
     boolean saveFilmGenres(long filmId, Set<Genre> genres);
 
     void loadFilmGenres(List<Film> films);
+
+    void loadFilmGenres(Film film);
 }

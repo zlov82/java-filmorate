@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.FilmsLikes;
-import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.Operations;
 import ru.yandex.practicum.filmorate.repository.FilmStorage;
 import ru.yandex.practicum.filmorate.repository.GenreStorage;
@@ -22,13 +21,11 @@ public class JdbcFilmService implements FilmService {
     private final FilmStorage filmStorage;
     private final GenreStorage genreStorage;
     private final ValidatorService validatorService;
-    private final JdbcMpaStorage mpaStorage;
 
-    public JdbcFilmService(@Qualifier("JdbcFilmStorage") FilmStorage filmStorage, GenreStorage genreStorage, ValidatorService validatorService, JdbcMpaStorage jdbcMpaStorage) {
+    public JdbcFilmService(@Qualifier("JdbcFilmStorage") FilmStorage filmStorage, GenreStorage genreStorage, ValidatorService validatorService) {
         this.filmStorage = filmStorage;
         this.genreStorage = genreStorage;
         this.validatorService = validatorService;
-        this.mpaStorage = jdbcMpaStorage;
     }
 
     @Override
@@ -107,7 +104,7 @@ public class JdbcFilmService implements FilmService {
     @Override
     public Film getFilmById(Long id) {
         Film film = filmStorage.getFilmById(id);
-        film.setGenres((LinkedHashSet<Genre>) genreStorage.getFilmGenres(id));
+        genreStorage.loadFilmGenres(film);
         return film;
     }
 
