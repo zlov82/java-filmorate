@@ -4,15 +4,18 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
+import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.repository.mappers.GenreRowMapper;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Repository
@@ -45,7 +48,7 @@ public class JdbcGenreStorage implements GenreStorage {
         try {
             Map<String, Object> params = new HashMap<>();
             params.put("film_id", filmId);
-            List<Genre> genreList =  jdbc.query("select id, name from genre where id in (SELECT genre_id FROM FILM_GENRE where film_id = :film_id)",params,genreRowMapper);
+            List<Genre> genreList = jdbc.query("select id, name from genre where id in (SELECT genre_id FROM FILM_GENRE where film_id = :film_id)", params, genreRowMapper);
             return new LinkedHashSet<>(genreList);
         } catch (EmptyResultDataAccessException ignored) {
             return null;
@@ -60,13 +63,41 @@ public class JdbcGenreStorage implements GenreStorage {
                 Map<String, Object> params = new HashMap<>();
                 params.put("genre_id", genre.getId());
                 params.put("film_id", filmId);
-                Integer intRes = jdbc.update("INSERT INTO  film_genre (film_id,genre_id) VALUES (:film_id,:genre_id)", params);
+                jdbc.update("INSERT INTO  film_genre (film_id,genre_id) VALUES (:film_id,:genre_id)", params);
             }
 
             return true;
         } catch (DataAccessException ignored) {
             return false;
         }
+
+    }
+
+    @Override
+    public void loadFilmGenres(List<Film> films) {
+        //Мапа из фильмов для использования в rs
+        final Map<Long, Film> filmsById = films.stream().collect(Collectors.toMap(Film::getId, f -> f));
+
+        //Получить лист ID фильмов
+        List<String> filmsIds = new ArrayList<>();
+        for (Film film : films) {
+            filmsIds.add(film.getId().toString());
+        }
+        String ids = String.join(",", filmsIds);
+
+        String sql = "select fg.film_id, fg.genre_id, g.name " +
+                "from film_genre fg, genre g " +
+                "where fg.genre_id = g.id " +
+                "and film_id in (" + ids + ")";
+
+        jdbc.query(sql, (rs) -> {
+            final Film film = filmsById.get(rs.getLong("film_id"));
+            Genre genre = new Genre();
+            genre.setId(rs.getInt("genre_id"));
+            genre.setName(rs.getString("name"));
+            film.addGenre(genre);
+        });
+
 
     }
 

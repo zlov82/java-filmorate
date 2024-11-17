@@ -99,12 +99,8 @@ public class JdbcFilmService implements FilmService {
 
     @Override
     public Collection<Film> getAll() {
-        //берем все фильмы
         Collection<Film> filmsList = filmStorage.getAll();
-        //в цикле плюсуем к каждому жанры
-        for (Film film : filmsList) {
-            film.setGenres((LinkedHashSet<Genre>)genreStorage.getFilmGenres(film.getId()));
-        }
+        genreStorage.loadFilmGenres((List<Film>) filmsList);
         return filmsList;
     }
 

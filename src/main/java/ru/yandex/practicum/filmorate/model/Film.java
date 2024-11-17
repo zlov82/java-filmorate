@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
@@ -28,5 +29,13 @@ public class Film {
     @JsonIgnore
     private Set<Long> usersWhoLike;
     private Mpa mpa;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private LinkedHashSet<Genre> genres;
+
+    public void addGenre(Genre genre) {
+        if (genres == null) {
+            genres = new LinkedHashSet<>();
+        }
+        genres.add(genre);
+    }
 }
