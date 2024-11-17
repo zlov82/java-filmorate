@@ -103,7 +103,6 @@ public class JdbcFilmService implements FilmService {
         Collection<Film> filmsList = filmStorage.getAll();
         //в цикле плюсуем к каждому жанры
         for (Film film : filmsList) {
-            film.setMpa(mpaStorage.getMpaById(film.getMpa().getId()));
             film.setGenres((LinkedHashSet<Genre>)genreStorage.getFilmGenres(film.getId()));
         }
         return filmsList;
@@ -112,7 +111,6 @@ public class JdbcFilmService implements FilmService {
     @Override
     public Film getFilmById(Long id) {
         Film film = filmStorage.getFilmById(id);
-        film.setMpa(mpaStorage.getMpaById(film.getMpa().getId()));
         film.setGenres((LinkedHashSet<Genre>) genreStorage.getFilmGenres(id));
         return film;
     }

@@ -67,7 +67,10 @@ public class JdbcFilmStorage implements FilmStorage {
         try {
             Map<String, Object> namedParams = new HashMap<>();
             namedParams.put("film_id", filmId);
-            return jdbc.queryForObject("select id, name, releasedate, duration, mpa_id, description from film where id = :film_id", namedParams, filmRowMapper);
+            String sql = "select f.id, f.name, f.releasedate, f.duration, f.mpa_id,m.name as mpa_name, f.description " +
+                         "from film as f, mpa as m " +"" +
+                         "where f.mpa_id = m.id and f.id = :film_id";
+            return jdbc.queryForObject(sql, namedParams, filmRowMapper);
         } catch (EmptyResultDataAccessException ignored) {
             throw new NotFoundException("Не удалось найти запрошенного фильма");
         }
@@ -75,7 +78,11 @@ public class JdbcFilmStorage implements FilmStorage {
 
     @Override
     public Collection<Film> getAll() {
-        return jdbc.query("select id, name, releasedate, duration, mpa_id, description from film order by id", filmRowMapper);
+        String sql = "select f.id, f.name, f.releasedate, f.duration, f.mpa_id,m.name as mpa_name, f.description "+
+                     "from film as f, mpa as m "+
+                     "where f.mpa_id = m.id "+
+                     "order by f.id";
+        return jdbc.query(sql, filmRowMapper);
     }
 
     @Override
