@@ -11,9 +11,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.FilmsLikes;
 import ru.yandex.practicum.filmorate.repository.mappers.FilmRowMapper;
-import ru.yandex.practicum.filmorate.repository.mappers.FilmsLikesRowMapper;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -27,7 +25,6 @@ public class JdbcFilmStorage implements FilmStorage {
 
     private final NamedParameterJdbcOperations jdbc;
     private final FilmRowMapper filmRowMapper;
-    private final FilmsLikesRowMapper filmsLikesRowMapper;
 
     @Override
     public Film save(Film newFilm) {
@@ -94,17 +91,6 @@ public class JdbcFilmStorage implements FilmStorage {
         return jdbc.query(sql, filmRowMapper);
     }
 
-
-    @Override
-    public List<FilmsLikes> getFilmsLikes() {
-        try {
-            return jdbc.query("select film_id, count(user_id) as likes_count from film_like group by film_id order by likes_count desc", filmsLikesRowMapper);
-        } catch (EmptyResultDataAccessException ignored) {
-            return null;
-        }
-
-    }
-
     @Override
     public void updateRate(long filmId) {
         Map<String, Object> params = new HashMap<>();
@@ -127,14 +113,5 @@ public class JdbcFilmStorage implements FilmStorage {
         return jdbc.query(sql, filmRowMapper);
     }
 
-    @Override
-    public void addLike(long filmId, long userId) {
-
-    }
-
-    @Override
-    public void removeLike(long filmId, long userId) {
-
-    }
 
 }

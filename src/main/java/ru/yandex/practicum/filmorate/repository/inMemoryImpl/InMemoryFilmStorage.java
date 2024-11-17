@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.FilmsLikes;
 import ru.yandex.practicum.filmorate.repository.FilmStorage;
 
 import java.time.LocalDate;
@@ -47,20 +46,6 @@ public class InMemoryFilmStorage implements FilmStorage {
         return returnFilms;
     }
 
-    @Override
-    public void addLike(long filmId, long userId) {
-
-    }
-
-    @Override
-    public void removeLike(long filmId, long userId) {
-
-    }
-
-    @Override
-    public List<FilmsLikes> getFilmsLikes() {
-        return null;
-    }
 
     @Override
     public void updateRate(long filmId) {

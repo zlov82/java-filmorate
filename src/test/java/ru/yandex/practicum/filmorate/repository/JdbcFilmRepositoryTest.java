@@ -7,19 +7,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.context.annotation.Import;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.FilmsLikes;
 import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.repository.mappers.FilmRowMapper;
-import ru.yandex.practicum.filmorate.repository.mappers.FilmsLikesRowMapper;
 
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @JdbcTest
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
-@Import({JdbcFilmStorage.class, FilmRowMapper.class, FilmsLikes.class, FilmsLikesRowMapper.class})
+@Import({JdbcFilmStorage.class, FilmRowMapper.class})
 @DisplayName("Проверка фильмов")
 public class JdbcFilmRepositoryTest {
     private final JdbcFilmStorage filmStorage;
@@ -34,6 +34,7 @@ public class JdbcFilmRepositoryTest {
 
         Mpa mpa = new Mpa();
         mpa.setId(2);
+        mpa.setName("MPA2");
         film.setMpa(mpa);
 
         return film;
@@ -49,6 +50,7 @@ public class JdbcFilmRepositoryTest {
 
         Mpa mpa = new Mpa();
         mpa.setId(1);
+        mpa.setName("MPA1");
         film.setMpa(mpa);
 
         return film;
@@ -63,6 +65,7 @@ public class JdbcFilmRepositoryTest {
 
         Mpa mpa = new Mpa();
         mpa.setId(1);
+        mpa.setName("MPA1");
         film.setMpa(mpa);
 
         return film;
@@ -112,7 +115,8 @@ public class JdbcFilmRepositoryTest {
         updatedFilm.setDescription("UpdatedDescription");
 
         Mpa mpa = new Mpa();
-        mpa.setId(updatedFilm.getMpa().getId() + 1);
+        mpa.setId(2);
+        mpa.setName("MPA2");
         updatedFilm.setMpa(mpa);
 
         filmStorage.update(updatedFilm);
@@ -121,41 +125,5 @@ public class JdbcFilmRepositoryTest {
                 .usingRecursiveAssertion()
                 .isEqualTo(updatedFilm);
     }
-
-    @Test
-    @DisplayName("Добавление лайка")
-    public void addLike() {
-        FilmsLikes fl = new FilmsLikes();
-        fl.setFilmId(1);
-        fl.setLikesCount(2);
-        List<FilmsLikes> testFilmLikes = new ArrayList<>(Arrays.asList(fl));
-
-        filmStorage.addLike(1, 1);
-        filmStorage.addLike(1, 2);
-        List<FilmsLikes> savedLikes = filmStorage.getFilmsLikes();
-
-        assertThat(savedLikes)
-                .usingRecursiveAssertion()
-                .isEqualTo(testFilmLikes);
-    }
-
-    @Test
-    @DisplayName("Удаление лайка")
-    public void removeLike() {
-        FilmsLikes fl = new FilmsLikes();
-        fl.setFilmId(2);
-        fl.setLikesCount(1);
-        List<FilmsLikes> testFilmLikes = new ArrayList<>(Arrays.asList(fl));
-
-        filmStorage.addLike(2, 1);
-        filmStorage.addLike(2, 2);
-        filmStorage.removeLike(2, 1);
-        List<FilmsLikes> savedLikes = filmStorage.getFilmsLikes();
-
-        assertThat(savedLikes)
-                .usingRecursiveAssertion()
-                .isEqualTo(testFilmLikes);
-    }
-
 
 }

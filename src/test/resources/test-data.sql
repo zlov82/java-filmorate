@@ -1,5 +1,5 @@
-INSERT INTO mpa (name) VALUES('G');
-INSERT INTO mpa (name) VALUES('PG');
+INSERT INTO mpa (name) VALUES('MPA1');
+INSERT INTO mpa (name) VALUES('MPA2');
 
 INSERT INTO genre (name) VALUES('Комедия');
 INSERT INTO genre (name) VALUES('Драма');
