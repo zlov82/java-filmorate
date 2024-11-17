@@ -74,7 +74,7 @@ public class JdbcFilmStorage implements FilmStorage {
             namedParams.put("film_id", filmId);
             String sql = "select f.id, f.name, f.releasedate, f.duration, f.mpa_id,m.name as mpa_name, f.description, f.rate " +
                     "from film as f, mpa as m " +
-                    "where f.mpa_id = m.id "+
+                    "where f.mpa_id = m.id " +
                     "and f.id = :film_id";
             return jdbc.queryForObject(sql, namedParams, filmRowMapper);
         } catch (EmptyResultDataAccessException ignored) {
@@ -99,7 +99,7 @@ public class JdbcFilmStorage implements FilmStorage {
         String sql = "update FILM " +
                 "set rate = (select count(user_id) " +
                 "from film_like " +
-                "where film_id = :film_id) "+
+                "where film_id = :film_id) " +
                 "where id = :film_id";
         jdbc.update(sql, params);
     }

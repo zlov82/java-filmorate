@@ -92,9 +92,9 @@ public class JdbcGenreStorage implements GenreStorage {
         try {
             Map<String, Object> params = new HashMap<>();
             params.put("film_id", film.getId());
-            String sql = "select id, name "+
-                         "from genre "+
-                         "where id in (SELECT genre_id FROM FILM_GENRE where film_id = :film_id)";
+            String sql = "select id, name " +
+                    "from genre " +
+                    "where id in (SELECT genre_id FROM FILM_GENRE where film_id = :film_id)";
             List<Genre> genreList = jdbc.query(sql, params, genreRowMapper);
             for (Genre genre : genreList) {
                 film.addGenre(genre);

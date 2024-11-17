@@ -26,14 +26,14 @@ public class JdbcMpaRepositoryTest {
     static Mpa testMpa() {
         Mpa mpa = new Mpa();
         mpa.setId(mpaId);
-        mpa.setName("G");
+        mpa.setName("MPA1");
         return mpa;
     }
 
     static Mpa testMpa2() {
         Mpa mpa = new Mpa();
         mpa.setId(2);
-        mpa.setName("PG");
+        mpa.setName("MPA2");
         return mpa;
     }
 

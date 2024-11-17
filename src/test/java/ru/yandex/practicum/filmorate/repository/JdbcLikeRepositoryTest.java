@@ -40,7 +40,7 @@ public class JdbcLikeRepositoryTest {
         likeStorage.addlike(1L, 2L);
         filmStorage.updateRate(1L);
 
-        likeStorage.removelike(1l, 1L);
+        likeStorage.removelike(1L, 1L);
         filmStorage.updateRate(1L);
         Film film = filmStorage.getFilmById(1L);
 

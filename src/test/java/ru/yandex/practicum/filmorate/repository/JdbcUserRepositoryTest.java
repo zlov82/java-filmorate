@@ -13,7 +13,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -105,37 +104,5 @@ public class JdbcUserRepositoryTest {
                 .isEqualTo(updatedUser);
     }
 
-    @Test
-    @DisplayName("Добавить друга")
-    public void addFriend() {
-        userStorage.addFriend(testUser(), testUser2());
-        List<User> savedFriends = userStorage.getUserFriends(testUser());
-
-        assertThat(savedFriends)
-                .hasSize(1)
-                .usingRecursiveAssertion()
-                .isEqualTo(new ArrayList<>(Arrays.asList(testUser2())));
-    }
-
-    @Test
-    @DisplayName("Удалить друга")
-    public void removeFriend() {
-        userStorage.addFriend(testUser(), testUser2());
-        User testUser3 = userStorage.save(testSaveUser());
-        userStorage.addFriend(testUser(), testUser3);
-        List<User> savedFriends = userStorage.getUserFriends(testUser());
-
-        assertThat(savedFriends)
-                .hasSize(2);
-
-        userStorage.removeFriend(testUser(), testUser2());
-        List<User> friendsAfterRemove = userStorage.getUserFriends(testUser());
-
-        assertThat(friendsAfterRemove)
-                .hasSize(1)
-                .usingRecursiveAssertion()
-                .isEqualTo(new ArrayList<>(Arrays.asList(testUser3)));
-
-    }
 
 }

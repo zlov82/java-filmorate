@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.Operations;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.repository.FriendsStorage;
 import ru.yandex.practicum.filmorate.repository.UserStorage;
 
 import java.util.ArrayList;
@@ -14,9 +15,11 @@ import java.util.Collection;
 public class JdbcUserService implements UserService {
 
     private final UserStorage userStorage;
+    private final FriendsStorage friendsStorage;
 
-    public JdbcUserService(@Qualifier("JdbcRepository") UserStorage userStorage) {
+    public JdbcUserService(@Qualifier("JdbcRepository") UserStorage userStorage, FriendsStorage friendsStorage) {
         this.userStorage = userStorage;
+        this.friendsStorage = friendsStorage;
     }
 
     @Override
@@ -52,9 +55,9 @@ public class JdbcUserService implements UserService {
         User friend = this.getUserById(userId2);
 
         if (action.equals(Operations.ADD)) {
-            userStorage.addFriend(user, friend);
+            friendsStorage.addFriend(user, friend);
         } else {
-            userStorage.removeFriend(user, friend);
+            friendsStorage.removeFriend(user, friend);
         }
         return this.getUserFriends(userId1);
     }

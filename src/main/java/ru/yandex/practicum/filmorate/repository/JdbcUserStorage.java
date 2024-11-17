@@ -68,22 +68,6 @@ public class JdbcUserStorage implements UserStorage {
     }
 
     @Override
-    public void addFriend(User user, User friend) {
-        Map<String, Object> params = new HashMap<>();
-        params.put("user_id", user.getId());
-        params.put("friend_id", friend.getId());
-        jdbc.update("MERGE INTO FRIENDSHIP (user_id, friend_id) KEY (user_id, friend_id) VALUES (:user_id,:friend_id)", params);
-    }
-
-    @Override
-    public void removeFriend(User user, User friend) {
-        Map<String, Object> params = new HashMap<>();
-        params.put("user_id", user.getId());
-        params.put("friend_id", friend.getId());
-        jdbc.update("DELETE FROM FRIENDSHIP WHERE user_id=:user_id AND friend_id=:friend_id", params);
-    }
-
-    @Override
     public List<User> getUserFriends(User user) {
         try {
             Map<String, Object> params = new HashMap<>();
