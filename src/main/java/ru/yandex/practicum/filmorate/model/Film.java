@@ -23,7 +23,7 @@ public class Film {
     private LocalDate releaseDate;
     @Positive
     private Integer duration;
-    @JsonIgnore
+    //@JsonIgnore
     private long likesCounter;
     @JsonIgnore
     private Set<Long> usersWhoLike;

@@ -41,7 +41,9 @@ public class JdbcFilmStorage implements FilmStorage {
                 .addValue("f_duration", newFilm.getDuration().toString())
                 .addValue("f_mpa_id", newFilm.getMpa().getId());
 
-        jdbc.update("INSERT INTO film (name,description,releaseDate,duration,mpa_id) VALUES(:f_name,:f_desc, CAST(:f_reldate as date),:f_duration,:f_mpa_id)", sqlParameters, keyHolder, new String[]{"id"});
+        String sql = "INSERT INTO film (name,description,releaseDate,duration,mpa_id) " +
+                "VALUES(:f_name,:f_desc, CAST(:f_reldate as date),:f_duration,:f_mpa_id)";
+        jdbc.update(sql, sqlParameters, keyHolder, new String[]{"id"});
         newFilm.setId(keyHolder.getKeyAs(Long.class));
         return newFilm;
 
@@ -58,7 +60,13 @@ public class JdbcFilmStorage implements FilmStorage {
         params.put("n_duration", updatedFilm.getDuration().toString());
         params.put("n_mpa_id", updatedFilm.getMpa().getId());
 
-        jdbc.update("UPDATE FILM set name = :n_name, description = :n_desc, releaseDate = :n_reldate, duration = :n_duration, mpa_id = :n_mpa_id  where id = :film_id", params);
+        String sql = "UPDATE FILM set name = :n_name, " +
+                "description = :n_desc, " +
+                "releaseDate = :n_reldate, " +
+                "duration = :n_duration, " +
+                "mpa_id = :n_mpa_id  " +
+                "where id = :film_id";
+        jdbc.update(sql, params);
         return updatedFilm;
     }
 
@@ -67,9 +75,10 @@ public class JdbcFilmStorage implements FilmStorage {
         try {
             Map<String, Object> namedParams = new HashMap<>();
             namedParams.put("film_id", filmId);
-            String sql = "select f.id, f.name, f.releasedate, f.duration, f.mpa_id,m.name as mpa_name, f.description " +
-                         "from film as f, mpa as m " +"" +
-                         "where f.mpa_id = m.id and f.id = :film_id";
+            String sql = "select f.id, f.name, f.releasedate, f.duration, f.mpa_id,m.name as mpa_name, f.description, f.rate " +
+                    "from film as f, mpa as m " +
+                    "where f.mpa_id = m.id "+
+                    "and f.id = :film_id";
             return jdbc.queryForObject(sql, namedParams, filmRowMapper);
         } catch (EmptyResultDataAccessException ignored) {
             throw new NotFoundException("Не удалось найти запрошенного фильма");
@@ -78,24 +87,13 @@ public class JdbcFilmStorage implements FilmStorage {
 
     @Override
     public Collection<Film> getAll() {
-        String sql = "select f.id, f.name, f.releasedate, f.duration, f.mpa_id,m.name as mpa_name, f.description "+
-                     "from film as f, mpa as m "+
-                     "where f.mpa_id = m.id "+
-                     "order by f.id";
+        String sql = "select f.id, f.name, f.releasedate, f.duration, f.mpa_id,m.name as mpa_name, f.description, f.rate " +
+                "from film as f, mpa as m " +
+                "where f.mpa_id = m.id " +
+                "order by f.id";
         return jdbc.query(sql, filmRowMapper);
     }
 
-    @Override
-    public void addLike(long filmId, long userId) {
-        SqlParameterSource sqlParameters = new MapSqlParameterSource("film_id", filmId).addValue("user_id", userId);
-        jdbc.update("MERGE INTO film_like (film_id, user_id) KEY (film_id, user_id) VALUES (:film_id,:user_id)", sqlParameters);
-    }
-
-    @Override
-    public void removeLike(long filmId, long userId) {
-        SqlParameterSource sqlParameters = new MapSqlParameterSource("film_id", filmId).addValue("user_id", userId);
-        jdbc.update("DELETE FROM film_like WHERE film_id = :film_id AND user_id =:user_id", sqlParameters);
-    }
 
     @Override
     public List<FilmsLikes> getFilmsLikes() {
@@ -106,4 +104,37 @@ public class JdbcFilmStorage implements FilmStorage {
         }
 
     }
+
+    @Override
+    public void updateRate(long filmId) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("film_id", filmId);
+
+        String sql = "update FILM " +
+                "set rate = (select count(user_id) " +
+                "from film_like " +
+                "where film_id = :film_id) "+
+                "where id = :film_id";
+        jdbc.update(sql, params);
+    }
+
+    @Override
+    public List<Film> getPopularFilms() {
+        String sql = "select f.id, f.name, f.releasedate, f.duration, f.mpa_id,m.name as mpa_name, f.description, f.rate " +
+                "from film as f, mpa as m " +
+                "where f.mpa_id = m.id " +
+                "order by f.rate desc";
+        return jdbc.query(sql, filmRowMapper);
+    }
+
+    @Override
+    public void addLike(long filmId, long userId) {
+
+    }
+
+    @Override
+    public void removeLike(long filmId, long userId) {
+
+    }
+
 }

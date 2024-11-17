@@ -11,4 +11,6 @@ public interface ValidatorService {
     boolean validateMpaId(Integer mpaId);
 
     boolean validateGenres(Set<Genre> genres);
+
+    void validateFilmById(Long filmId);
 }

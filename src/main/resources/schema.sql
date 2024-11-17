@@ -11,6 +11,7 @@ CREATE TABLE IF NOT EXISTS film (
     duration integer    NOT NULL,
     mpa_id integer NOT NULL,
     description varchar(200)    NOT NULL,
+    rate integer,
     CONSTRAINT fk_film_mpa_id FOREIGN KEY(mpa_id) REFERENCES mpa (id)
 );
 

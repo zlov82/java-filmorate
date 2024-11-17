@@ -5,11 +5,10 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.FilmsLikes;
 import ru.yandex.practicum.filmorate.model.Operations;
 import ru.yandex.practicum.filmorate.repository.FilmStorage;
 import ru.yandex.practicum.filmorate.repository.GenreStorage;
-import ru.yandex.practicum.filmorate.repository.JdbcMpaStorage;
+import ru.yandex.practicum.filmorate.repository.LikeStorage;
 
 import java.util.*;
 
@@ -21,11 +20,13 @@ public class JdbcFilmService implements FilmService {
     private final FilmStorage filmStorage;
     private final GenreStorage genreStorage;
     private final ValidatorService validatorService;
+    private final LikeStorage likeStorage;
 
-    public JdbcFilmService(@Qualifier("JdbcFilmStorage") FilmStorage filmStorage, GenreStorage genreStorage, ValidatorService validatorService) {
+    public JdbcFilmService(@Qualifier("JdbcFilmStorage") FilmStorage filmStorage, GenreStorage genreStorage, ValidatorService validatorService, LikeStorage likeStorage) {
         this.filmStorage = filmStorage;
         this.genreStorage = genreStorage;
         this.validatorService = validatorService;
+        this.likeStorage = likeStorage;
     }
 
     @Override
@@ -110,29 +111,24 @@ public class JdbcFilmService implements FilmService {
 
     @Override
     public Film changeFilmsLikes(Long filmId, Long userId, Operations action) {
-        Film film = this.getFilmById(filmId);
+        validatorService.validateFilmById(filmId);
 
         if (action.equals(Operations.ADD)) {
-            filmStorage.addLike(filmId, userId);
+            likeStorage.addlike(filmId, userId);
+
         } else {
-            filmStorage.removeLike(filmId, userId);
+            likeStorage.removelike(filmId, userId);
         }
-        return film;
+        filmStorage.updateRate(filmId);
+        return this.getFilmById(filmId);
     }
 
     @Override
     public List<Film> getPopularFilms(Long count) {
-        List<FilmsLikes> filmsLikes = filmStorage.getFilmsLikes();
-        List<Film> filmList = new ArrayList<>();
-
-        if (filmsLikes.size() > count) {
-            filmsLikes = filmsLikes.subList(0, Math.toIntExact(count));
+        List<Film> films = filmStorage.getPopularFilms();
+        if (films.size() > count) {
+            films = films.subList(0, Math.toIntExact(count));
         }
-
-        for (FilmsLikes filmsLike : filmsLikes) {
-            filmList.add(this.getFilmById(filmsLike.getFilmId()));
-        }
-
-        return filmList;
+        return films;
     }
 }

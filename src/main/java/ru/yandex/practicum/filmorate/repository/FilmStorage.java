@@ -20,4 +20,8 @@ public interface FilmStorage {
     void removeLike(long filmId, long userId);
 
     List<FilmsLikes> getFilmsLikes();
+
+    void updateRate(long filmId);
+
+    List<Film> getPopularFilms();
 }

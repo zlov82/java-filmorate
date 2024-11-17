@@ -62,6 +62,16 @@ public class InMemoryFilmStorage implements FilmStorage {
         return null;
     }
 
+    @Override
+    public void updateRate(long filmId) {
+
+    }
+
+    @Override
+    public List<Film> getPopularFilms() {
+        return List.of();
+    }
+
     private void validFilm(Film film) {
         if (film.getReleaseDate().isBefore(MIN_RELEASE_DATE)) {
             log.debug("Релизная дата {}", film.getReleaseDate());
