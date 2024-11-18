@@ -14,6 +14,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import ru.yandex.practicum.filmorate.controller.adapter.LocalDateAdapter;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.Mpa;
 
 import java.time.LocalDate;
 
@@ -34,7 +35,6 @@ class FilmControllerTest {
 
     @BeforeEach
     public void setUp() {
-        //this.mockMvc = MockMvcBuilders.standaloneSetup(new FilmController().build());
         this.mockMvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext).build();
     }
 
@@ -100,6 +100,10 @@ class FilmControllerTest {
         film.setDescription(description);
         film.setReleaseDate(date);
         film.setDuration(duration);
+
+        Mpa mpa = new Mpa();
+        mpa.setId(1);
+        film.setMpa(mpa);
 
         return film;
     }

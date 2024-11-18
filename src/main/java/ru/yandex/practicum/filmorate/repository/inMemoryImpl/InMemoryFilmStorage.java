@@ -1,16 +1,18 @@
-package ru.yandex.practicum.filmorate.storage;
+package ru.yandex.practicum.filmorate.repository.inMemoryImpl;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
-
+import ru.yandex.practicum.filmorate.repository.FilmStorage;
 
 import java.time.LocalDate;
 import java.util.*;
 
 @Slf4j
 @Component
+@Qualifier("InMemoryFilmStorage")
 public class InMemoryFilmStorage implements FilmStorage {
     private static final LocalDate MIN_RELEASE_DATE = LocalDate.of(1895, 12, 28);
     private final Map<Long, Film> films = new HashMap<>();
@@ -42,6 +44,17 @@ public class InMemoryFilmStorage implements FilmStorage {
     public Collection<Film> getAll() {
         Collection<Film> returnFilms = films.values();
         return returnFilms;
+    }
+
+
+    @Override
+    public void updateRate(long filmId) {
+
+    }
+
+    @Override
+    public List<Film> getPopularFilms() {
+        return List.of();
     }
 
     private void validFilm(Film film) {

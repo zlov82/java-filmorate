@@ -7,6 +7,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**
@@ -26,4 +27,13 @@ public class Film {
     private long likesCounter;
     @JsonIgnore
     private Set<Long> usersWhoLike;
+    private Mpa mpa;
+    private LinkedHashSet<Genre> genres;
+
+    public void addGenre(Genre genre) {
+        if (genres == null) {
+            genres = new LinkedHashSet<>();
+        }
+        genres.add(genre);
+    }
 }

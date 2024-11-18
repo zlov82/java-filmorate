@@ -1,8 +1,9 @@
-package ru.yandex.practicum.filmorate.storage;
+package ru.yandex.practicum.filmorate.repository;
 
 import ru.yandex.practicum.filmorate.model.Film;
 
 import java.util.Collection;
+import java.util.List;
 
 public interface FilmStorage {
     Film save(Film newFilm);
@@ -12,4 +13,8 @@ public interface FilmStorage {
     Film getFilmById(long filmId);
 
     Collection<Film> getAll();
+
+    void updateRate(long filmId);
+
+    List<Film> getPopularFilms();
 }

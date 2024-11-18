@@ -69,13 +69,13 @@ class UserControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(gson.toJson(createUser(
                                 null,
-                                "andy.kozlov@gmail.com",
-                                "zlov",
+                                "andy1.kozlov@gmail.com",
+                                "zlov1",
                                 null,
                                 LocalDate.of(1982, 11, 21)
                         ))))
                 .andExpect(status().is2xxSuccessful())
-                .andExpect(jsonPath("$.name").value("zlov"));
+                .andExpect(jsonPath("$.name").value("zlov1"));
 
     }
 
